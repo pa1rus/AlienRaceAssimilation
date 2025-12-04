@@ -1,10 +1,10 @@
 #include "player.h"
 #include "maps.h"
 
-#define GRAVITY 1.0f
+#define GRAVITY 1.5f
 #define MOVE_SPEED 6.0f
 #define MAX_FALL_SPEED 12.0f
-#define JUMP_FORCE -12.0f
+#define JUMP_FORCE -18.0f
 
 Player player = {0};
 
@@ -21,33 +21,33 @@ void InitPlayer()
     player.onGround = false;
 }
 
-static bool CheckCollisionWithTiles(Rectangle playerRect)
+bool CheckCollisionWithTiles(Rectangle playerRect)
 {
-    Map *m = &gameMapData.activeMap;
-    if (!m || m->layerCount <= 0)
+    Map *currentMap = &gameMapData.activeMap;
+    if (!currentMap || currentMap->layerCount <= 0)
         return false;
 
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
     float scaledTileSize = tileSize * tileScale;
 
-    for (int li = 0; li < m->layerCount; li++)
+    for (int i = 0; i < currentMap->layerCount; i++)
     {
-        if (!m->layers[li].collisions)
+        if (!currentMap->layers[i].collisions)
             continue;
 
-        Layer *layer = &m->layers[li];
-        for (int r = 0; r < m->gridRows; r++)
+        Layer *layer = &currentMap->layers[i];
+        for (int row = 0; row < currentMap->gridRows; row++)
         {
-            for (int c = 0; c < m->gridCols; c++)
+            for (int col = 0; col < currentMap->gridCols; col++)
             {
-                int tid = layer->tiles[r][c].index;
-                if (tid < 0)
+                int tileIndex = layer->tiles[row][col].index;
+                if (tileIndex < 0)
                     continue;
 
                 Rectangle tileRect = {
-                    (float)c * scaledTileSize,
-                    (float)r * scaledTileSize,
+                    (float)col * scaledTileSize,
+                    (float)row * scaledTileSize,
                     scaledTileSize,
                     scaledTileSize};
 

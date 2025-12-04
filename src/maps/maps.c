@@ -22,18 +22,18 @@ void ParseTiles(cJSON *tilesJson, Tile **tiles, int cols, int rows)
         return;
 
     int row = 0;
-    for (cJSON *r = tilesJson->child; r && row < rows; r = r->next, row++)
+    for (cJSON *rowJson = tilesJson->child; rowJson && row < rows; rowJson = rowJson->next, row++)
     {
-        if (!cJSON_IsArray(r))
+        if (!cJSON_IsArray(rowJson))
             continue;
 
         int col = 0;
-        for (cJSON *t = r->child; t && col < cols; t = t->next, col++)
+        for (cJSON *tileJson = rowJson->child; tileJson && col < cols; tileJson = tileJson->next, col++)
         {
             tiles[row][col].index = -1;
-            if (cJSON_IsObject(t))
+            if (cJSON_IsObject(tileJson))
             {
-                cJSON *idx = cJSON_GetObjectItem(t, "index");
+                cJSON *idx = cJSON_GetObjectItem(tileJson, "index");
                 if (idx && cJSON_IsNumber(idx))
                 {
                     tiles[row][col].index = idx->valueint;
@@ -48,17 +48,17 @@ Layer *ParseLayers(cJSON *layersJson, int cols, int rows, int *layerCount)
     *layerCount = cJSON_GetArraySize(layersJson);
     Layer *layers = malloc(*layerCount * sizeof(Layer));
 
-    int idx = 0;
-    for (cJSON *l = layersJson->child; l; l = l->next, idx++)
+    int layerIndex = 0;
+    for (cJSON *layerJson = layersJson->child; layerJson; layerJson = layerJson->next, layerIndex++)
     {
-        cJSON *opacity = cJSON_GetObjectItem(l, "opacity");
-        cJSON *collisions = cJSON_GetObjectItem(l, "collisions");
-        cJSON *tiles = cJSON_GetObjectItem(l, "tiles");
+        cJSON *opacity = cJSON_GetObjectItem(layerJson, "opacity");
+        cJSON *collisions = cJSON_GetObjectItem(layerJson, "collisions");
+        cJSON *tiles = cJSON_GetObjectItem(layerJson, "tiles");
 
-        layers[idx].opacity = opacity ? opacity->valuedouble : 1.0f;
-        layers[idx].collisions = collisions ? collisions->type == cJSON_True : false;
-        layers[idx].tiles = CreateTileGrid(cols, rows);
-        ParseTiles(tiles, layers[idx].tiles, cols, rows);
+        layers[layerIndex].opacity = opacity ? opacity->valuedouble : 1.0f;
+        layers[layerIndex].collisions = collisions ? collisions->type == cJSON_True : false;
+        layers[layerIndex].tiles = CreateTileGrid(cols, rows);
+        ParseTiles(tiles, layers[layerIndex].tiles, cols, rows);
     }
     return layers;
 }
@@ -99,9 +99,9 @@ void InitMaps()
     gameMapData.currentMapIndex = 0;
 
     int i = 0;
-    for (cJSON *m = maps->child; m; m = m->next, i++)
+    for (cJSON *mapJson = maps->child; mapJson; mapJson = mapJson->next, i++)
     {
-        gameMapData.maps[i] = ParseMap(m);
+        gameMapData.maps[i] = ParseMap(mapJson);
     }
 
     gameMapData.tilesetTexture = LoadTexture(TILESET_PATH);
@@ -125,40 +125,40 @@ void LoadMap(int index)
 
 void DrawCurrentMap()
 {
-    Map *m = &gameMapData.activeMap;
-    if (!m || m->layerCount <= 0)
+    Map *currentMap = &gameMapData.activeMap;
+    if (!currentMap || currentMap->layerCount <= 0)
         return;
-    Texture2D tex = gameMapData.tilesetTexture;
-    if (tex.id == 0)
+    Texture2D tilesetTexture = gameMapData.tilesetTexture;
+    if (tilesetTexture.id == 0)
         return;
 
-    int tilesPerRow = tex.width / gameMapData.tileSize;
+    int tilesPerRow = tilesetTexture.width / gameMapData.tileSize;
     float tileSizeF = (float)gameMapData.tileSize;
     float scale = (float)gameMapData.tileScale;
 
-    for (int li = 0; li < m->layerCount; li++)
+    for (int j = 0; j < currentMap->layerCount; j++)
     {
-        Layer *layer = &m->layers[li];
-        for (int r = 0; r < m->gridRows; r++)
+        Layer *layer = &currentMap->layers[j];
+        for (int k = 0; k < currentMap->gridRows; k++)
         {
-            for (int c = 0; c < m->gridCols; c++)
+            for (int l = 0; l < currentMap->gridCols; l++)
             {
-                int tid = layer->tiles[r][c].index;
-                if (tid < 0)
+                int tileIndex = layer->tiles[k][l].index;
+                if (tileIndex < 0)
                     continue;
 
-                int sx = (tid % tilesPerRow) * gameMapData.tileSize;
-                int sy = (tid / tilesPerRow) * gameMapData.tileSize;
-                Rectangle src = {(float)sx, (float)sy, tileSizeF, tileSizeF};
+                int sourceX = (tileIndex % tilesPerRow) * gameMapData.tileSize;
+                int sourceY = (tileIndex / tilesPerRow) * gameMapData.tileSize;
+                Rectangle src = {(float)sourceX, (float)sourceY, tileSizeF, tileSizeF};
 
                 Rectangle dst = {
-                    (float)c * tileSizeF * scale,
-                    (float)r * tileSizeF * scale,
+                    (float)l * tileSizeF * scale,
+                    (float)k * tileSizeF * scale,
                     tileSizeF * scale,
                     tileSizeF * scale};
 
                 Color tint = (Color){255, 255, 255, (unsigned char)(255.0f * layer->opacity)};
-                DrawTexturePro(tex, src, dst, (Vector2){0, 0}, 0.0f, tint);
+                DrawTexturePro(tilesetTexture, src, dst, (Vector2){0, 0}, 0.0f, tint);
             }
         }
     }

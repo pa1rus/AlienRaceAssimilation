@@ -11,7 +11,6 @@
 extern Camera2D gameCamera;
 
 void InitGameCamera(void);
-void UpdateGameCamera(float delta);
-Camera2D *GetGameCamera(void);
+void UpdateGameCamera(float deltaTime);
 
 #endif

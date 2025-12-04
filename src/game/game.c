@@ -15,9 +15,9 @@ void InitGame()
 
 void UpdateGame()
 {
-    float dt = GetFrameTime();
+    float deltaTime = GetFrameTime();
     UpdatePlayer();
-    UpdateGameCamera(dt);
+    UpdateGameCamera(deltaTime);
 }
 
 void DrawGame()
