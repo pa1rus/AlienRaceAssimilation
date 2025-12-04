@@ -4,6 +4,8 @@
 #include <raylib.h>
 #include "globals.h"
 #include "maps.h"
+#include "player.h"
+#include "camera.h"
 
 void InitGame();
 void UpdateGame();

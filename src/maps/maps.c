@@ -96,7 +96,7 @@ void InitMaps()
     gameMapData.tileScale = 3;
     gameMapData.mapCount = cJSON_GetArraySize(maps);
     gameMapData.maps = malloc(gameMapData.mapCount * sizeof(Map));
-    gameMapData.currentMapIndex = 1;
+    gameMapData.currentMapIndex = 0;
 
     int i = 0;
     for (cJSON *m = maps->child; m; m = m->next, i++)

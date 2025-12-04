@@ -1,5 +1,4 @@
 #include "game.h"
-#include "maps.h"
 
 RenderTexture2D target;
 int scaledW, scaledH;
@@ -8,12 +7,17 @@ void InitGame()
 {
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
-    
+
     InitMaps();
+    InitPlayer();
+    InitGameCamera();
 }
 
 void UpdateGame()
 {
+    float dt = GetFrameTime();
+    UpdatePlayer();
+    UpdateGameCamera(dt);
 }
 
 void DrawGame()
@@ -23,7 +27,10 @@ void DrawGame()
 
     BeginTextureMode(target);
     ClearBackground(BLACK);
+    BeginMode2D(gameCamera);
     DrawCurrentMap();
+    DrawPlayer();
+    EndMode2D();
     EndTextureMode();
 
     BeginDrawing();
