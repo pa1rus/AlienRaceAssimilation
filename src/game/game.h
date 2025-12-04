@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <raylib.h>
+#include "globals.h"
 #include "maps.h"
 
 void InitGame();
@@ -9,5 +10,9 @@ void UpdateGame();
 void DrawGame();
 void UpdateDrawFrame();
 void UnloadGame();
+
+extern RenderTexture2D target;
+extern int scaledW;
+extern int scaledH;
 
 #endif

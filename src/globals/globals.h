@@ -6,12 +6,8 @@
 #define TILESET_PATH "./assets/maps/tiles.png"
 #define MAP_JSON_PATH "./assets/maps/maps.json"
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
-extern const int FPS;
-
-extern RenderTexture2D target;
-extern int scaledW;
-extern int scaledH;
+#define GAME_WIDTH  800
+#define GAME_HEIGHT 450
+#define FPS 60
 
 #endif
