@@ -1,0 +1,855 @@
+{
+  "tileSize": 16,
+  "maps": [
+    {
+      "gridCols": 20,
+      "gridRows": 10,
+      "layers": [
+        {
+          "opacity": 1,
+          "collisions": true,
+          "tiles": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              {
+                "index": 0
+              },
+              {
+                "index": 1
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 3
+              },
+              {
+                "index": 4
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 6
+              },
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              {
+                "index": 10
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 12
+              },
+              null,
+              null,
+              {
+                "index": 27
+              },
+              {
+                "index": 28
+              },
+              {
+                "index": 28
+              },
+              {
+                "index": 28
+              },
+              {
+                "index": 29
+              },
+              null,
+              null,
+              {
+                "index": 15
+              },
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              {
+                "index": 19
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 21
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 24
+              },
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        {
+          "opacity": 0.75,
+          "collisions": false,
+          "tiles": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              {
+                "index": 30
+              },
+              {
+                "index": 32
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 5
+              },
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 13
+              },
+              {
+                "index": 14
+              },
+              null,
+              {
+                "index": 18
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "gridCols": 20,
+      "gridRows": 5,
+      "layers": [
+        {
+          "opacity": 1,
+          "collisions": true,
+          "tiles": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              {
+                "index": 0
+              },
+              {
+                "index": 1
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 2
+              },
+              {
+                "index": 3
+              },
+              {
+                "index": 4
+              },
+              {
+                "index": 0
+              },
+              {
+                "index": 6
+              },
+              {
+                "index": 4
+              },
+              {
+                "index": 0
+              },
+              {
+                "index": 6
+              },
+              {
+                "index": 4
+              },
+              {
+                "index": 0
+              },
+              {
+                "index": 1
+              },
+              {
+                "index": 3
+              },
+              {
+                "index": 4
+              }
+            ],
+            [
+              null,
+              {
+                "index": 10
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 11
+              },
+              {
+                "index": 12
+              },
+              null,
+              null,
+              {
+                "index": 15
+              },
+              null,
+              null,
+              {
+                "index": 15
+              },
+              null,
+              null,
+              {
+                "index": 10
+              },
+              {
+                "index": 12
+              },
+              null
+            ],
+            [
+              null,
+              {
+                "index": 19
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 20
+              },
+              {
+                "index": 21
+              },
+              null,
+              null,
+              {
+                "index": 24
+              },
+              null,
+              null,
+              {
+                "index": 24
+              },
+              null,
+              null,
+              {
+                "index": 19
+              },
+              {
+                "index": 21
+              },
+              null
+            ]
+          ]
+        },
+        {
+          "opacity": 0.75,
+          "collisions": false,
+          "tiles": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 13
+              },
+              {
+                "index": 14
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              {
+                "index": 13
+              },
+              {
+                "index": 14
+              },
+              null,
+              {
+                "index": 22
+              },
+              {
+                "index": 23
+              },
+              {
+                "index": 18
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "index": 18
+              },
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
