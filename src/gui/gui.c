@@ -6,34 +6,25 @@
 #include <stdio.h>
 
 const int BUTTON_HEIGHT = 100;
+
 int defaultFontSize = 64;
-
-uint32_t HexToABGR(uint32_t hex, uint8_t alpha) {
-    uint32_t r = (hex >> 16) & 0xFF;
-    uint32_t g = (hex >> 8) & 0xFF;
-    uint32_t b = hex & 0xFF;
-    uint32_t a = alpha;
-
-    return (a << 24) | (b << 16) | (g << 8) | r;
-}
-
 
 void InitGUI()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));   // #F6D6BD
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     GuiSetStyle(DEFAULT, TEXT_SPACING, 16);
 
-    GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, HexToABGR(0x977577, 0xFF));   // #977577
-    GuiSetStyle(BUTTON, BASE_COLOR_FOCUSED, HexToABGR(0x816271, 0xFF));  // #816271
-    GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, HexToABGR(0x4E495F, 0xFF));  // #4E495F
-    GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));   // #F6D6BD
-    GuiSetStyle(BUTTON, TEXT_COLOR_FOCUSED, HexToABGR(0xF6D6BD, 0xFF));
-    GuiSetStyle(BUTTON, TEXT_COLOR_PRESSED, HexToABGR(0xF6D6BD, 0xFF));
-    GuiSetStyle(BUTTON, BORDER_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));
-    GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, HexToABGR(0xF6D6BD, 0xFF));
-    GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, HexToABGR(0xF6D6BD, 0xFF));
+    GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, 0x977577FF);
+    GuiSetStyle(BUTTON, BASE_COLOR_FOCUSED, 0x816271FF);
+    GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, 0x4E495FFF);
+    GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
+    GuiSetStyle(BUTTON, TEXT_COLOR_FOCUSED, 0xF6D6BDFF);
+    GuiSetStyle(BUTTON, TEXT_COLOR_PRESSED, 0xF6D6BDFF);
+    GuiSetStyle(BUTTON, BORDER_COLOR_NORMAL, 0xF6D6BDFF);
+    GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, 0xF6D6BDFF);
+    GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, 0xF6D6BDFF);
     GuiSetStyle(BUTTON, BORDER_WIDTH, 4);
 }
 
@@ -46,24 +37,29 @@ void RenderMenuGUI()
     int spacing = 50; 
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, 128);
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
     GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 30 }, "Alien Race");
     y += spacing * 2;
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, HexToABGR(0xC3A38A, 0xFF));
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xC3A38AFF); // #C3A38A
     GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 20 }, "Assimilation");
     y += spacing * 3;
 
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Play")) {}
-    y += BUTTON_HEIGHT + spacing;
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Play")) {
+    }
+    y += BUTTON_HEIGHT;
+    y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Rules")) {}
-    y += BUTTON_HEIGHT + spacing;
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Rules")) {
+    }
+    y += BUTTON_HEIGHT;
+    y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Exit")) {}
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Exit")) {
+    }
 }
 
 void RenderLobbySelectorGUI()
@@ -74,11 +70,13 @@ void RenderLobbySelectorGUI()
     int y = 150;
     int spacing = 50;
 
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, HexToABGR(0xF6D6BD, 0xFF));
     GuiLabel((Rectangle){ panelX, y, panelWidth, 30 }, "Select Lobby");
     y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, 30 }, "Lobby 1")) {}
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, 30 }, "Lobby 1")) {
+    }
 }
 
-void RenderInGameGUI() {}
+void RenderInGameGUI()
+{
+}
