@@ -1,8 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <raylib.h>
-#include <raymath.h>
+#include "raylib.h"
+#include "raymath.h"
 #include "maps.h"
 #include "animations.h"
 

@@ -26,8 +26,36 @@ void UpdateCameraCenter(Vector2 playerPos, float deltaTime)
 void UpdateGameCamera(float deltaTime)
 {
     Vector2 playerCenter = {
-        player.rect.x + player.rect.width * 0.5f,
-        player.rect.y + player.rect.height * 0.5f};
+        player.rect.x + player.rect.width  * 0.5f,
+        player.rect.y + player.rect.height * 0.5f
+    };
+
     UpdateCameraCenter(playerCenter, deltaTime);
+
+    int mapW = gameMapData.activeMap.gridCols * gameMapData.tileSize * gameMapData.tileScale;
+    int mapH = gameMapData.activeMap.gridRows * gameMapData.tileSize * gameMapData.tileScale;
+
+    float halfW = GAME_WIDTH * 0.5f;
+    float halfH = GAME_HEIGHT * 0.5f;
+
+    float minX = halfW;
+    float minY = halfH;
+    float maxX = mapW - halfW;
+    float maxY = mapH - halfH;
+
+    if (mapW <= GAME_WIDTH) {
+        gameCamera.target.x = mapW * 0.5f;
+    } else {
+        if (gameCamera.target.x < minX) gameCamera.target.x = minX;
+        if (gameCamera.target.x > maxX) gameCamera.target.x = maxX;
+    }
+
+    if (mapH <= GAME_HEIGHT) {
+        gameCamera.target.y = mapH * 0.5f;
+    } else {
+        if (gameCamera.target.y < minY) gameCamera.target.y = minY;
+        if (gameCamera.target.y > maxY) gameCamera.target.y = maxY;
+    }
 }
+
 
