@@ -14,16 +14,24 @@ void InitPlayer()
 {
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
+
+    float size = tileSize * tileScale;
+
     player.rect = (Rectangle){
-        playerSpawnPoints[gameMapData.currentMapIndex].x * tileSize * tileScale,
-        playerSpawnPoints[gameMapData.currentMapIndex].y * tileSize * tileScale,
-        tileSize * tileScale,
-        tileSize * tileScale};
-    player.vel = (Vector2){0.0f, 0.0f};
-    player.thrust = (Vector2){0.0f, -0.25f};
-    player.angle = 0.0;
+        playerSpawnPoints[gameMapData.currentMapIndex].x * size,
+        playerSpawnPoints[gameMapData.currentMapIndex].y * size,
+        size,
+        size
+    };
+
+    player.vel = (Vector2){0, 0};
+    player.thrust = (Vector2){0, -0.25f};
+    player.angle = 0.0f;
     player.rotationSpeed = 180.0f;
+
+    player.radius = size * 0.5f;
 }
+
 
 Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
 {
@@ -40,24 +48,24 @@ Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
     return Vector2Add((Vector2){x, y}, anchor);
 }
 
-bool CheckCollisionWithTiles(Rectangle playerRect, float angle)
+bool CircleRectCollision(Vector2 c, float r, Rectangle rect)
 {
-    Vector2 center = {playerRect.x, playerRect.y};
-    float halfWidth = playerRect.width / 2.0f;
-    float halfHeight = playerRect.height / 2.0f;
-    Vector2 corners[4];
-    corners[0] = Vector2Add(rotate((Vector2){-halfWidth, -halfHeight}, angle, (Vector2){0, 0}), center);
-    corners[1] = Vector2Add(rotate((Vector2){halfWidth, -halfHeight}, angle, (Vector2){0, 0}), center);
-    corners[2] = Vector2Add(rotate((Vector2){halfWidth, halfHeight}, angle, (Vector2){0, 0}), center);
-    corners[3] = Vector2Add(rotate((Vector2){-halfWidth, halfHeight}, angle, (Vector2){0, 0}), center);
+    float closestX = fmaxf(rect.x, fminf(c.x, rect.x + rect.width));
+    float closestY = fmaxf(rect.y, fminf(c.y, rect.y + rect.height));
 
+    float dx = c.x - closestX;
+    float dy = c.y - closestY;
+
+    return (dx*dx + dy*dy) <= (r*r);
+}
+
+bool CheckCollisionWithTiles(Vector2 center, float radius)
+{
     Map *currentMap = &gameMapData.activeMap;
     if (!currentMap || currentMap->layerCount <= 0)
         return false;
 
-    float tileSize = (float)gameMapData.tileSize;
-    float tileScale = (float)gameMapData.tileScale;
-    float scaledTileSize = tileSize * tileScale;
+    float tileSize = gameMapData.tileSize * gameMapData.tileScale;
 
     for (int i = 0; i < currentMap->layerCount; i++)
     {
@@ -65,76 +73,68 @@ bool CheckCollisionWithTiles(Rectangle playerRect, float angle)
             continue;
 
         Layer *layer = &currentMap->layers[i];
+
         for (int row = 0; row < currentMap->gridRows; row++)
         {
             for (int col = 0; col < currentMap->gridCols; col++)
             {
-                Tile *tile = &layer->tiles[row][col];
-                if (!tile->indices || tile->indiceCount <= 0)
+                Tile *t = &layer->tiles[row][col];
+                if (!t->indices || t->indiceCount <= 0)
                     continue;
 
                 Rectangle tileRect = {
-                    (float)col * scaledTileSize,
-                    (float)row * scaledTileSize,
-                    scaledTileSize,
-                    scaledTileSize};
+                    col * tileSize,
+                    row * tileSize,
+                    tileSize,
+                    tileSize
+                };
 
-                for (int corner = 0; corner < 4; corner++)
-                {
-                    if (CheckCollisionPointRec(corners[corner], tileRect))
-                        return true;
-                }
+                if (CircleRectCollision(center, radius, tileRect))
+                    return true;
             }
         }
     }
     return false;
 }
 
+
 void UpdatePlayer()
 {
     if (IsKeyDown(KEY_W))
-    {
-        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0, 0}));
-    }
+        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0,0}));
+
     if (IsKeyDown(KEY_D))
-    {
-        player.angle += GetFrameTime() * player.rotationSpeed;
-        player.angle = fmod(player.angle, 360.0);
-        if (player.angle < 0)
-            player.angle += 360.0;
-    }
+        player.angle = fmod(player.angle + GetFrameTime() * player.rotationSpeed, 360.0);
+
     if (IsKeyDown(KEY_A))
-    {
-        player.angle -= GetFrameTime() * player.rotationSpeed;
-        player.angle = fmod(player.angle, 360.0);
-        if (player.angle < 0)
-            player.angle += 360.0;
-    }
+        player.angle = fmod(player.angle - GetFrameTime() * player.rotationSpeed, 360.0);
 
     float speed = Vector2Length(player.vel);
-    if (speed > MAX_SPEED) {
+    if (speed > MAX_SPEED)
         player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
-    }
 
-    Rectangle newRect = player.rect;
-    newRect.x += player.vel.x;
-    if (!CheckCollisionWithTiles(newRect, player.angle)) {
-        player.rect.x = newRect.x;
-    } else {
-        player.vel.x = -player.vel.x * 0.5f;
-    }
+    Vector2 center = {
+        player.rect.x,
+        player.rect.y
+    };
 
-    newRect = player.rect;
-    newRect.y += player.vel.y;
-    if (!CheckCollisionWithTiles(newRect, player.angle)) {
-        player.rect.y = newRect.y;
-    } else {
-        player.vel.y = -player.vel.y * 0.5f;
-    }
+    Vector2 nextCenterX = {center.x + player.vel.x, center.y};
+    if (!CheckCollisionWithTiles(nextCenterX, player.radius))
+        player.rect.x += player.vel.x;
+    else
+        player.vel.x *= -0.5f;
+
+    Vector2 nextCenterY = {center.x, center.y + player.vel.y};
+    if (!CheckCollisionWithTiles(nextCenterY, player.radius))
+        player.rect.y += player.vel.y;
+    else
+        player.vel.y *= -0.5f;
 }
+
 
 void DrawPlayer()
 {
     Vector2 origin = {player.rect.width / 2.0f, player.rect.height / 2.0f};
     DrawRectanglePro(player.rect, origin, (float)player.angle, WHITE);
+
 }

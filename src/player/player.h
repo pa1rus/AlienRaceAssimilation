@@ -16,6 +16,7 @@ typedef struct
     Vector2 thrust;
     float rotationSpeed;
     double angle;
+    float radius
 } Player;
 
 extern Player player;

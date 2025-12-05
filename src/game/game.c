@@ -26,7 +26,8 @@ void DrawGame()
     scaledH = GetScreenHeight();
 
     BeginTextureMode(target);
-    ClearBackground(BLACK);
+    Color c = (Color){32, 57, 79, 255};
+    ClearBackground(c);
     BeginMode2D(gameCamera);
     DrawCurrentMap();
     DrawPlayer();
