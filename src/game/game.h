@@ -14,8 +14,10 @@ typedef enum
     MENU = 0,
     LOBBY_SELECTOR,
     GAME,
-    EXIT
+    CREDITS
 } GameState;
+
+extern int gameState;
 
 extern RenderTexture2D target;
 extern int scaledW;

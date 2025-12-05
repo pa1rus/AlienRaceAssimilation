@@ -42,39 +42,53 @@ void RenderMenuGUI()
     y += spacing * 2;
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
-    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xC3A38AFF); // #C3A38A
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xC3A38AFF);
     GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 20 }, "Assimilation");
     y += spacing * 3;
 
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
 
     if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Play")) {
+        gameState = LOBBY_SELECTOR;
     }
     y += BUTTON_HEIGHT;
     y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Rules")) {
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Credits")) {
+        gameState = CREDITS;
     }
     y += BUTTON_HEIGHT;
     y += spacing;
 
     if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Exit")) {
+        UnloadGame();
+        CloseWindow();
+        exit(0);
     }
 }
 
 void RenderLobbySelectorGUI()
 {
-    int panelWidth = 300;
+    int panelWidth = GAME_WIDTH / 3;
     int panelX = GAME_WIDTH/2 - panelWidth/2;
 
-    int y = 150;
+    int y = 250;
     int spacing = 50;
 
     GuiLabel((Rectangle){ panelX, y, panelWidth, 30 }, "Select Lobby");
-    y += spacing;
+    y += spacing * 2;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, 30 }, "Lobby 1")) {
+    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back")) {
+        gameState = MENU;
     }
+
+    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT }, "Lobby 1")) {
+        gameState = GAME;
+    }
+}
+
+void RenderCreditsGUI(){
+    
 }
 
 void RenderInGameGUI()

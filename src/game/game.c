@@ -32,7 +32,7 @@ void UpdateGame()
         UpdateAnimations();
         RenderInGameGUI();
         break;
-    case EXIT:
+    case CREDITS:
         break;
     }
 }
@@ -62,7 +62,7 @@ void DrawGame()
         DrawPlayer();
         EndMode2D();
         break;
-    case EXIT:
+        case CREDITS:
         break;
     }
 
