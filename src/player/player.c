@@ -8,15 +8,20 @@
 
 Player player = {0};
 
+const Vector2 playerSpawnPoints[] = {
+    (Vector2){3.0f, 0.0f},
+    (Vector2){5.0f, 1.0f},
+};
+
 void InitPlayer()
 {
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
     player.rect = (Rectangle){
-        3.0f * tileSize * tileScale,
-        1.0f * tileSize * tileScale,
-        16.0f * tileScale,
-        32.0f * tileScale};
+        playerSpawnPoints[gameMapData.currentMapIndex].x * tileSize * tileScale,
+        playerSpawnPoints[gameMapData.currentMapIndex].y * tileSize * tileScale,
+        tileSize * tileScale,
+        tileSize * 2 * tileScale};
     player.vel = (Vector2){0.0f, 0.0f};
     player.onGround = false;
 }
@@ -41,8 +46,8 @@ bool CheckCollisionWithTiles(Rectangle playerRect)
         {
             for (int col = 0; col < currentMap->gridCols; col++)
             {
-                int tileIndex = layer->tiles[row][col].index;
-                if (tileIndex < 0)
+                Tile *tile = &layer->tiles[row][col];
+                if (!tile->indices || tile->indiceCount <= 0)
                     continue;
 
                 Rectangle tileRect = {

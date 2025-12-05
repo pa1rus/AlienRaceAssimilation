@@ -10,7 +10,7 @@ Tile **CreateTileGrid(int cols, int rows)
         tiles[i] = calloc(cols, sizeof(Tile));
         for (int c = 0; c < cols; c++)
         {
-            tiles[i][c].index = -1;
+            tiles[i][c].indices = NULL;
         }
     }
     return tiles;
@@ -30,18 +30,32 @@ void ParseTiles(cJSON *tilesJson, Tile **tiles, int cols, int rows)
         int col = 0;
         for (cJSON *tileJson = rowJson->child; tileJson && col < cols; tileJson = tileJson->next, col++)
         {
-            tiles[row][col].index = -1;
+            tiles[row][col].indices = NULL;
+            tiles[row][col].indiceCount = 0;
+            tiles[row][col].animationTimer = 0;
+            tiles[row][col].currentFrame = 0;
+
             if (cJSON_IsObject(tileJson))
             {
-                cJSON *idx = cJSON_GetObjectItem(tileJson, "index");
-                if (idx && cJSON_IsNumber(idx))
+                cJSON *indicesArray = cJSON_GetObjectItem(tileJson, "indices");
+                if (indicesArray && cJSON_IsArray(indicesArray))
                 {
-                    tiles[row][col].index = idx->valueint;
+                    int count = cJSON_GetArraySize(indicesArray);
+
+                    tiles[row][col].indiceCount = count;
+                    tiles[row][col].indices = malloc(count * sizeof(int));
+
+                    int i = 0;
+                    for (cJSON *idx = indicesArray->child; idx; idx = idx->next, i++)
+                    {
+                        tiles[row][col].indices[i] = idx->valueint;
+                    }
                 }
             }
         }
     }
 }
+
 
 Layer *ParseLayers(cJSON *layersJson, int cols, int rows, int *layerCount)
 {
@@ -90,10 +104,12 @@ void InitMaps()
     }
 
     cJSON *tileSize = cJSON_GetObjectItem(root, "tileSize");
+    cJSON *animationSpeed = cJSON_GetObjectItem(root, "animationSpeed");
     cJSON *maps = cJSON_GetObjectItem(root, "maps");
 
     gameMapData.tileSize = tileSize ? tileSize->valueint : 16;
-    gameMapData.tileScale = 3;
+    gameMapData.animationSpeed = animationSpeed ? animationSpeed->valueint : 8;
+    gameMapData.tileScale = 1;
     gameMapData.mapCount = cJSON_GetArraySize(maps);
     gameMapData.maps = malloc(gameMapData.mapCount * sizeof(Map));
     gameMapData.currentMapIndex = 0;
@@ -128,6 +144,7 @@ void DrawCurrentMap()
     Map *currentMap = &gameMapData.activeMap;
     if (!currentMap || currentMap->layerCount <= 0)
         return;
+
     Texture2D tilesetTexture = gameMapData.tilesetTexture;
     if (tilesetTexture.id == 0)
         return;
@@ -136,26 +153,42 @@ void DrawCurrentMap()
     float tileSizeF = (float)gameMapData.tileSize;
     float scale = (float)gameMapData.tileScale;
 
+    double frameDuration = 1.0 / gameMapData.animationSpeed;
+    double deltaTime = GetFrameTime();
+
     for (int j = 0; j < currentMap->layerCount; j++)
     {
         Layer *layer = &currentMap->layers[j];
+
         for (int k = 0; k < currentMap->gridRows; k++)
         {
             for (int l = 0; l < currentMap->gridCols; l++)
             {
-                int tileIndex = layer->tiles[k][l].index;
-                if (tileIndex < 0)
+                Tile *tile = &layer->tiles[k][l];
+
+                if (!tile->indices || tile->indiceCount <= 0)
                     continue;
+
+                tile->animationTimer += deltaTime;
+
+                while (tile->animationTimer >= frameDuration)
+                {
+                    tile->animationTimer -= frameDuration;
+                    tile->currentFrame = (tile->currentFrame + 1) % tile->indiceCount;
+                }
+
+                int tileIndex = tile->indices[tile->currentFrame];
 
                 int sourceX = (tileIndex % tilesPerRow) * gameMapData.tileSize;
                 int sourceY = (tileIndex / tilesPerRow) * gameMapData.tileSize;
-                Rectangle src = {(float)sourceX, (float)sourceY, tileSizeF, tileSizeF};
 
+                Rectangle src = { (float)sourceX, (float)sourceY, tileSizeF, tileSizeF };
                 Rectangle dst = {
                     (float)l * tileSizeF * scale,
                     (float)k * tileSizeF * scale,
                     tileSizeF * scale,
-                    tileSizeF * scale};
+                    tileSizeF * scale
+                };
 
                 Color tint = (Color){255, 255, 255, (unsigned char)(255.0f * layer->opacity)};
                 DrawTexturePro(tilesetTexture, src, dst, (Vector2){0, 0}, 0.0f, tint);

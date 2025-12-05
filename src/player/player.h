@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <raylib.h>
+#include "maps.h"
 
 typedef struct
 {

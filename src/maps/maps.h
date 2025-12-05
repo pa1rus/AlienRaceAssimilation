@@ -8,7 +8,10 @@
 #include "globals.h"
 
 typedef struct {
-    int index; 
+    int *indices;
+    int currentFrame;
+    int indiceCount;
+    double animationTimer;
 } Tile;
 
 typedef struct {
@@ -26,6 +29,7 @@ typedef struct {
 
 typedef struct {
     int tileSize;
+    int animationSpeed;
     int tileScale;
     Map *maps;
     Map activeMap;
