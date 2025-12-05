@@ -3,11 +3,14 @@
 RenderTexture2D target;
 int scaledW, scaledH;
 
+int gameState = MENU;
+
 void InitGame()
 {
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
+    InitGUI();
     InitMaps();
     InitPlayer();
     InitGameCamera();
@@ -16,10 +19,22 @@ void InitGame()
 
 void UpdateGame()
 {
-    float deltaTime = GetFrameTime();
-    UpdatePlayer();
-    UpdateGameCamera(deltaTime);
-    UpdateAnimations();
+    switch (gameState)
+    {
+    case MENU:
+        break;
+    case LOBBY_SELECTOR:
+        break;
+    case GAME:
+        float deltaTime = GetFrameTime();
+        UpdatePlayer();
+        UpdateGameCamera(deltaTime);
+        UpdateAnimations();
+        RenderInGameGUI();
+        break;
+    case EXIT:
+        break;
+    }
 }
 
 void DrawGame()
@@ -30,10 +45,27 @@ void DrawGame()
     BeginTextureMode(target);
     Color c = (Color){32, 57, 79, 255};
     ClearBackground(c);
-    BeginMode2D(gameCamera);
-    DrawCurrentMap();
-    DrawPlayer();
-    EndMode2D();
+
+    switch (gameState)
+    {
+    case MENU:
+        RenderMenuGUI();
+
+        break;
+    case LOBBY_SELECTOR:
+     RenderLobbySelectorGUI();
+
+        break;
+    case GAME:
+        BeginMode2D(gameCamera);
+        DrawCurrentMap();
+        DrawPlayer();
+        EndMode2D();
+        break;
+    case EXIT:
+        break;
+    }
+
     EndTextureMode();
 
     BeginDrawing();

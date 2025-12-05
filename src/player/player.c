@@ -1,11 +1,11 @@
 #include "player.h"
 
-#define MAX_SPEED 18.0f
+#define MAX_SPEED 12.0f
 
 Player player = {0};
 
 const Vector2 playerSpawnPoints[] = {
-    (Vector2){3.0f, 0.0f},
+    (Vector2){17.0f, 76.0f},
     (Vector2){5.0f, 1.0f},
 };
 
@@ -23,11 +23,11 @@ void InitPlayer()
         size};
 
     player.vel = (Vector2){0, 0};
-    player.thrust = (Vector2){0, -0.25f};
+    player.thrust = (Vector2){0, -0.15f};
     player.angle = 0.0f;
-    player.rotationSpeed = 180.0f;
+    player.rotationSpeed = 270.0f;
 
-    player.radius = size * 0.5f;
+    player.radius = size * 0.25f;
 
     player.activeAnimation = PLAYER_IDLE;
 }
@@ -123,13 +123,13 @@ void UpdatePlayer()
     if (!CheckCollisionWithTiles(nextCenterX, player.radius))
         player.rect.x += player.vel.x;
     else
-        player.vel.x *= -0.5f;
+        player.vel.x *= -0.25f;
 
     Vector2 nextCenterY = {center.x, center.y + player.vel.y};
     if (!CheckCollisionWithTiles(nextCenterY, player.radius))
         player.rect.y += player.vel.y;
     else
-        player.vel.y *= -0.5f;
+        player.vel.y *= -0.25f;
 }
 
 void DrawPlayer()

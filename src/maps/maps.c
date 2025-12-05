@@ -109,7 +109,7 @@ void InitMaps()
 
     gameMapData.tileSize = tileSize ? tileSize->valueint : 16;
     gameMapData.animationSpeed = animationSpeed ? animationSpeed->valueint : 8;
-    gameMapData.tileScale = 1;
+    gameMapData.tileScale = 2;
     gameMapData.mapCount = cJSON_GetArraySize(maps);
     gameMapData.maps = malloc(gameMapData.mapCount * sizeof(Map));
     gameMapData.currentMapIndex = 0;
