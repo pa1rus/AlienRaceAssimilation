@@ -1,6 +1,6 @@
 #include "player.h"
 
-#define MAX_SPEED 12.0f
+#define MAX_SPEED 1000.0f
 
 Player player = {0};
 
@@ -8,6 +8,8 @@ const Vector2 playerSpawnPoints[] = {
     (Vector2){17.0f, 76.0f},
     (Vector2){5.0f, 1.0f},
 };
+
+int framesSincelastBump = 0;
 
 void InitPlayer()
 {
@@ -23,7 +25,7 @@ void InitPlayer()
         size};
 
     player.vel = (Vector2){0, 0};
-    player.thrust = (Vector2){0, -0.15f};
+    player.thrust = (Vector2){0, -400.0f};
     player.angle = 0.0f;
     player.rotationSpeed = 270.0f;
 
@@ -97,11 +99,16 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
 
 void UpdatePlayer()
 {
+    float deltaTime = GetFrameTime();
+
+    framesSincelastBump++;
+
     if (IsKeyDown(KEY_W))
     {
-        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0, 0}));
+        player.vel = Vector2Add(player.vel, Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
         player.activeAnimation = PLAYER_FLY;
     }
+
     else
         player.activeAnimation = PLAYER_IDLE;
 
@@ -119,17 +126,24 @@ void UpdatePlayer()
         player.rect.x,
         player.rect.y};
 
-    Vector2 nextCenterX = {center.x + player.vel.x, center.y};
-    if (!CheckCollisionWithTiles(nextCenterX, player.radius))
-        player.rect.x += player.vel.x;
-    else
-        player.vel.x *= -0.25f;
+    Vector2 nextCenterX = {center.x + player.vel.x * deltaTime, center.y};
 
-    Vector2 nextCenterY = {center.x, center.y + player.vel.y};
+    if (!CheckCollisionWithTiles(nextCenterX, player.radius))
+        player.rect.x += player.vel.x * deltaTime;
+    else if (framesSincelastBump >= 3)
+    {
+        player.vel.x *= -0.25f;
+        framesSincelastBump = 0;
+    }
+
+    Vector2 nextCenterY = {center.x, center.y + player.vel.y * deltaTime};
     if (!CheckCollisionWithTiles(nextCenterY, player.radius))
-        player.rect.y += player.vel.y;
-    else
+        player.rect.y += player.vel.y * deltaTime;
+    else if (framesSincelastBump > 5)
+    {
         player.vel.y *= -0.25f;
+        framesSincelastBump = 0;
+    }
 }
 
 void DrawPlayer()
@@ -138,6 +152,5 @@ void DrawPlayer()
         player.activeAnimation,
         player.rect,
         player.angle,
-        1.0f
-    );
+        1.0f);
 }

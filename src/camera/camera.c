@@ -23,8 +23,10 @@ void UpdateCameraCenter(Vector2 playerPos, float deltaTime)
     gameCamera.target = Vector2Add(gameCamera.target, step);
 }
 
-void UpdateGameCamera(float deltaTime)
+void UpdateGameCamera()
 {
+    float deltaTime = GetFrameTime();
+
     Vector2 playerCenter = {
         player.rect.x + player.rect.width  * 0.5f,
         player.rect.y + player.rect.height * 0.5f

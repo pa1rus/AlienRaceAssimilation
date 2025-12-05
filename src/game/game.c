@@ -26,9 +26,8 @@ void UpdateGame()
     case LOBBY_SELECTOR:
         break;
     case GAME:
-        float deltaTime = GetFrameTime();
         UpdatePlayer();
-        UpdateGameCamera(deltaTime);
+        UpdateGameCamera();
         UpdateAnimations();
         RenderInGameGUI();
         break;
