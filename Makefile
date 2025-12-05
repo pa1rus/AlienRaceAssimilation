@@ -7,7 +7,7 @@ OUT_WEB    = $(BUILD_DIR)/web/index.html
 
 CC_NATIVE      = zig cc
 CFLAGS_NATIVE  = -Wall -std=c99 $(INCDIR)
-LIBS_NATIVE    = -lraylib -lcjson -lm -lpthread
+LIBS_NATIVE    = -lraylib -lcjson -lm
 
 CC_WEB         = emcc
 INCDIR_WEB     = -Ilib

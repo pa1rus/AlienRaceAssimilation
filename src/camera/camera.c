@@ -12,7 +12,7 @@ void InitGameCamera(void)
 
 void UpdateCameraCenter(Vector2 playerPos, float deltaTime)
 {
-    const float followSpeed = 1.5f;
+    const float followSpeed = 2.0f;
 
     gameCamera.offset = (Vector2){(float)GAME_WIDTH * 0.5f, (float)GAME_HEIGHT * 0.5f};
 

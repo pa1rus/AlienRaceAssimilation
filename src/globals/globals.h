@@ -6,8 +6,8 @@
 #define TILESET_PATH "./assets/maps/tiles.png"
 #define MAP_JSON_PATH "./assets/maps/maps.json"
 
-#define GAME_WIDTH  800
-#define GAME_HEIGHT 450
+#define GAME_WIDTH  1920
+#define GAME_HEIGHT 1080
 #define FPS 60
 
 #endif

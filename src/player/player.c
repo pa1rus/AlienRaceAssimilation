@@ -1,10 +1,7 @@
 #include "player.h"
 #include "maps.h"
 
-#define GRAVITY 1.5f
-#define MOVE_SPEED 6.0f
-#define MAX_FALL_SPEED 12.0f
-#define JUMP_FORCE -18.0f
+#define MAX_SPEED 18.0f
 
 Player player = {0};
 
@@ -21,9 +18,26 @@ void InitPlayer()
         playerSpawnPoints[gameMapData.currentMapIndex].x * tileSize * tileScale,
         playerSpawnPoints[gameMapData.currentMapIndex].y * tileSize * tileScale,
         tileSize * tileScale,
-        tileSize * 2 * tileScale};
+        tileSize * tileScale};
     player.vel = (Vector2){0.0f, 0.0f};
-    player.onGround = false;
+    player.thrust = (Vector2){0.0f, -0.25f};
+    player.angle = 0.0;
+    player.rotationSpeed = 180.0f;
+}
+
+Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
+{
+    coordinates = Vector2Subtract(coordinates, anchor);
+
+    double radians = angle * (M_PI / 180.0);
+    double rotation_matrix[2][2] = {
+        {cos(radians), sin(radians) * -1},
+        {sin(radians), cos(radians)},
+    };
+
+    double x = (rotation_matrix[0][0] * coordinates.x) + (rotation_matrix[0][1] * coordinates.y);
+    double y = (rotation_matrix[1][0] * coordinates.x) + (rotation_matrix[1][1] * coordinates.y);
+    return Vector2Add((Vector2){x, y}, anchor);
 }
 
 bool CheckCollisionWithTiles(Rectangle playerRect)
@@ -66,40 +80,49 @@ bool CheckCollisionWithTiles(Rectangle playerRect)
 
 void UpdatePlayer()
 {
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
-        player.vel.x = -MOVE_SPEED;
-    else if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
-        player.vel.x = MOVE_SPEED;
-    else
-        player.vel.x = 0.0f;
+    if (IsKeyDown(KEY_W))
+    {
+        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0, 0}));
+    }
+    if (IsKeyDown(KEY_D))
+    {
+        player.angle += GetFrameTime() * player.rotationSpeed;
+        player.angle = fmod(player.angle, 360.0);
+        if (player.angle < 0)
+            player.angle += 360.0;
+    }
+    if (IsKeyDown(KEY_A))
+    {
+        player.angle -= GetFrameTime() * player.rotationSpeed;
+        player.angle = fmod(player.angle, 360.0);
+        if (player.angle < 0)
+            player.angle += 360.0;
+    }
 
-    if (IsKeyPressed(KEY_SPACE) && player.onGround)
-        player.vel.y = JUMP_FORCE;
-
-    player.vel.y += GRAVITY;
-    if (player.vel.y > MAX_FALL_SPEED)
-        player.vel.y = MAX_FALL_SPEED;
+    float speed = Vector2Length(player.vel);
+    if (speed > MAX_SPEED) {
+        player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
+    }
 
     Rectangle newRect = player.rect;
     newRect.x += player.vel.x;
-    if (!CheckCollisionWithTiles(newRect))
+    if (!CheckCollisionWithTiles(newRect)) {
         player.rect.x = newRect.x;
+    } else {
+        player.vel.x = -player.vel.x * 0.5f;
+    }
 
-    player.onGround = false;
     newRect = player.rect;
     newRect.y += player.vel.y;
-    if (CheckCollisionWithTiles(newRect))
-    {
-        player.vel.y = 0.0f;
-        player.onGround = true;
-    }
-    else
-    {
+    if (!CheckCollisionWithTiles(newRect)) {
         player.rect.y = newRect.y;
+    } else {
+        player.vel.y = -player.vel.y * 0.5f;
     }
 }
 
 void DrawPlayer()
 {
-    DrawRectangleRec(player.rect, WHITE);
+    Vector2 origin = {player.rect.width / 2.0f, player.rect.height / 2.0f};
+    DrawRectanglePro(player.rect, origin, (float)player.angle, WHITE);
 }

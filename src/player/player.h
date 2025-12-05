@@ -2,13 +2,20 @@
 #define PLAYER_H
 
 #include <raylib.h>
+#include <raymath.h>
 #include "maps.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 typedef struct
 {
     Rectangle rect;
     Vector2 vel;
-    bool onGround;
+    Vector2 thrust;
+    float rotationSpeed;
+    double angle;
 } Player;
 
 extern Player player;
