@@ -1,7 +1,7 @@
 #ifndef ANIMATIONS_H
 #define ANIMATIONS_H
 
-#include <raylib.h>
+#include "raylib.h"
 #include "globals.h"
 
 typedef enum {

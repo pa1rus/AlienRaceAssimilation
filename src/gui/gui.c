@@ -1,7 +1,7 @@
 #include "gui.h"
 
 #define RAYGUI_IMPLEMENTATION
-#include <raygui.h>
+#include "raygui.h"
 
 const int BUTTON_HEIGHT = 100;
 
@@ -30,25 +30,21 @@ void InitGUI()
 
 void RenderMenuGUI()
 {
-    int screenW = GetScreenWidth();
+    int panelWidth = GAME_WIDTH / 3;
+    int panelX = GAME_WIDTH/2 - panelWidth/2;
 
-    int panelWidth = screenW / 3;
-    int panelX = screenW/2 - panelWidth/2;
-
-    int y = 150;
+    int y = 250;
     int spacing = 50; 
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, 128);
 
-    GuiLabel((Rectangle){ panelX, y, panelWidth, 30 }, "Alien Race");
-    y += 40;
-    y += spacing;
+    GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 30 }, "Alien Race");
+    y += spacing * 2;
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
 
-    GuiLabel((Rectangle){ panelX, y, panelWidth, 20 }, "Assimilation");
-    y += 20;
-    y += spacing;
+    GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 20 }, "Assimilation");
+    y += spacing * 2;
 
     if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Play")) {
     }
@@ -66,10 +62,9 @@ void RenderMenuGUI()
 
 void RenderLobbySelectorGUI()
 {
-    int screenW = GetScreenWidth();
 
     int panelWidth = 300;
-    int panelX = screenW/2 - panelWidth/2;
+    int panelX = GAME_WIDTH/2 - panelWidth/2;
 
     int y = 150;
     int spacing = 50;

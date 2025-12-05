@@ -1,7 +1,8 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <raylib.h>
+#include "raylib.h"
+#include "globals.h"
 
 void InitGUI();
 void RenderMenuGUI();

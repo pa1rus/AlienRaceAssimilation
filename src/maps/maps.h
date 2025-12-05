@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cjson/cJSON.h>
-#include <raylib.h>
+#include "raylib.h"
 #include "globals.h"
 
 typedef struct {
