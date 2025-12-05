@@ -40,8 +40,17 @@ Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
     return Vector2Add((Vector2){x, y}, anchor);
 }
 
-bool CheckCollisionWithTiles(Rectangle playerRect)
+bool CheckCollisionWithTiles(Rectangle playerRect, float angle)
 {
+    Vector2 center = {playerRect.x, playerRect.y};
+    float halfWidth = playerRect.width / 2.0f;
+    float halfHeight = playerRect.height / 2.0f;
+    Vector2 corners[4];
+    corners[0] = Vector2Add(rotate((Vector2){-halfWidth, -halfHeight}, angle, (Vector2){0, 0}), center);
+    corners[1] = Vector2Add(rotate((Vector2){halfWidth, -halfHeight}, angle, (Vector2){0, 0}), center);
+    corners[2] = Vector2Add(rotate((Vector2){halfWidth, halfHeight}, angle, (Vector2){0, 0}), center);
+    corners[3] = Vector2Add(rotate((Vector2){-halfWidth, halfHeight}, angle, (Vector2){0, 0}), center);
+
     Map *currentMap = &gameMapData.activeMap;
     if (!currentMap || currentMap->layerCount <= 0)
         return false;
@@ -70,8 +79,11 @@ bool CheckCollisionWithTiles(Rectangle playerRect)
                     scaledTileSize,
                     scaledTileSize};
 
-                if (CheckCollisionRecs(playerRect, tileRect))
-                    return true;
+                for (int corner = 0; corner < 4; corner++)
+                {
+                    if (CheckCollisionPointRec(corners[corner], tileRect))
+                        return true;
+                }
             }
         }
     }
@@ -106,7 +118,7 @@ void UpdatePlayer()
 
     Rectangle newRect = player.rect;
     newRect.x += player.vel.x;
-    if (!CheckCollisionWithTiles(newRect)) {
+    if (!CheckCollisionWithTiles(newRect, player.angle)) {
         player.rect.x = newRect.x;
     } else {
         player.vel.x = -player.vel.x * 0.5f;
@@ -114,7 +126,7 @@ void UpdatePlayer()
 
     newRect = player.rect;
     newRect.y += player.vel.y;
-    if (!CheckCollisionWithTiles(newRect)) {
+    if (!CheckCollisionWithTiles(newRect, player.angle)) {
         player.rect.y = newRect.y;
     } else {
         player.vel.y = -player.vel.y * 0.5f;
