@@ -6,6 +6,7 @@
 #include "maps.h"
 #include "player.h"
 #include "camera.h"
+#include "animations.h"
 
 void InitGame();
 void UpdateGame();

@@ -11,6 +11,7 @@ void InitGame()
     InitMaps();
     InitPlayer();
     InitGameCamera();
+    InitAnimations();
 }
 
 void UpdateGame()
@@ -18,6 +19,7 @@ void UpdateGame()
     float deltaTime = GetFrameTime();
     UpdatePlayer();
     UpdateGameCamera(deltaTime);
+    UpdateAnimations();
 }
 
 void DrawGame()

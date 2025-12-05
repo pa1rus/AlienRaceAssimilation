@@ -1,5 +1,4 @@
 #include "player.h"
-#include "maps.h"
 
 #define MAX_SPEED 18.0f
 
@@ -21,8 +20,7 @@ void InitPlayer()
         playerSpawnPoints[gameMapData.currentMapIndex].x * size,
         playerSpawnPoints[gameMapData.currentMapIndex].y * size,
         size,
-        size
-    };
+        size};
 
     player.vel = (Vector2){0, 0};
     player.thrust = (Vector2){0, -0.25f};
@@ -30,8 +28,9 @@ void InitPlayer()
     player.rotationSpeed = 180.0f;
 
     player.radius = size * 0.5f;
-}
 
+    player.activeAnimation = PLAYER_IDLE;
+}
 
 Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
 {
@@ -56,7 +55,7 @@ bool CircleRectCollision(Vector2 c, float r, Rectangle rect)
     float dx = c.x - closestX;
     float dy = c.y - closestY;
 
-    return (dx*dx + dy*dy) <= (r*r);
+    return (dx * dx + dy * dy) <= (r * r);
 }
 
 bool CheckCollisionWithTiles(Vector2 center, float radius)
@@ -86,8 +85,7 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
                     col * tileSize,
                     row * tileSize,
                     tileSize,
-                    tileSize
-                };
+                    tileSize};
 
                 if (CircleRectCollision(center, radius, tileRect))
                     return true;
@@ -97,11 +95,15 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
     return false;
 }
 
-
 void UpdatePlayer()
 {
     if (IsKeyDown(KEY_W))
-        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0,0}));
+    {
+        player.vel = Vector2Add(player.vel, rotate(player.thrust, player.angle, (Vector2){0, 0}));
+        player.activeAnimation = PLAYER_FLY;
+    }
+    else
+        player.activeAnimation = PLAYER_IDLE;
 
     if (IsKeyDown(KEY_D))
         player.angle = fmod(player.angle + GetFrameTime() * player.rotationSpeed, 360.0);
@@ -115,8 +117,7 @@ void UpdatePlayer()
 
     Vector2 center = {
         player.rect.x,
-        player.rect.y
-    };
+        player.rect.y};
 
     Vector2 nextCenterX = {center.x + player.vel.x, center.y};
     if (!CheckCollisionWithTiles(nextCenterX, player.radius))
@@ -131,10 +132,12 @@ void UpdatePlayer()
         player.vel.y *= -0.5f;
 }
 
-
 void DrawPlayer()
 {
-    Vector2 origin = {player.rect.width / 2.0f, player.rect.height / 2.0f};
-    DrawRectanglePro(player.rect, origin, (float)player.angle, WHITE);
-
+    DrawAnimationAt(
+        player.activeAnimation,
+        player.rect,
+        player.angle,
+        1.0f
+    );
 }
