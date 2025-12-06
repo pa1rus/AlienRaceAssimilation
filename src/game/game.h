@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "animations.h"
 #include "audio.h"
+#include "finish.h"
 
 typedef enum
 {

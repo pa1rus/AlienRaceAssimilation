@@ -16,6 +16,7 @@ void InitGame()
     InitPlayer();
     InitGameCamera();
     InitAnimations();
+    InitFinish();
     InitAudio();
 }
 
@@ -40,6 +41,7 @@ void UpdateGame()
         gameStarted = true;
     }
         UpdatePlayer();
+        UpdateFinish();
         UpdateGameCamera();
         UpdateAnimations();
         UpdateInGameGUI();
@@ -73,9 +75,12 @@ void DrawGame()
     case GAME:
         BeginMode2D(gameCamera);
         DrawCurrentMap();
+        DrawFinishBottom();
         DrawPlayer();
+        DrawFinishTop();
         EndMode2D();
         DrawInGameGUI();
+
         break;
         case CREDITS:
         break;

@@ -10,6 +10,13 @@
 #define MENU_MUSIC_PATH "./assets/audio/menuMusic.ogg"
 #define ENIGINE_SOUND_PATH "./assets/audio/engineSound.ogg"
 
+#define FINISH_IDLE_TOP_PATH "./assets/animations/finishIdle.png"
+#define FINISH_IDLE_BOTTOM_PATH "./assets/animations/mouthIdle.png"
+#define FINISH_OPEN_TOP_PATH "./assets/animations/finishOpened.png"
+#define FINISH_OPEN_BOTTOM_PATH "./assets/animations/mouthOpened.png"
+#define FINISH_TRANSITION_TOP_PATH "./assets/animations/finishTransition.png"
+#define FINISH_TRANSITION_BOTTOM_PATH "./assets/animations/mouthTransition.png"
+
 #define GAME_WIDTH  1920
 #define GAME_HEIGHT 1080
 #define FPS 60

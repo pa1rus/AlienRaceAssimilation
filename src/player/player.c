@@ -5,8 +5,7 @@
 Player player = {0};
 
 const Vector2 playerSpawnPoints[] = {
-    (Vector2){17.0f, 76.0f},
-    (Vector2){5.0f, 1.0f},
+    (Vector2){5.0f, 153.0f},
 };
 
 int framesSincelastBump = 0;
