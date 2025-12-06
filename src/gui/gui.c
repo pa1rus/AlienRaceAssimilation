@@ -3,6 +3,11 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+float lobbyScrollY = 0.0f;
+Lobby lobbies[] = {
+    {"Lobby 1"}, {"Lobby 2"}, {"Lobby 3"}, {"Lobby 4"}, {"Lobby 5"}, {"Lobby 6"}, {"Lobby 7"}, {"Lobby 8"}};
+int lobbyCount = sizeof(lobbies) / sizeof(lobbies[0]);
+
 const int BUTTON_HEIGHT = 100;
 int defaultFontSize = 64;
 
@@ -88,21 +93,120 @@ void RenderLobbySelectorGUI()
     int panelWidth = GAME_WIDTH / 3;
     int panelX = GAME_WIDTH / 2 - panelWidth / 2;
 
-    int y = 250;
-    int spacing = 50;
+    int titleY = 150;
+    int spacing = 20;
+    float btnH = (float)BUTTON_HEIGHT;
 
-    GuiLabel((Rectangle){panelX, y, panelWidth, 30}, "Select Lobby");
-    y += spacing * 2;
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    GuiLabel((Rectangle){panelX, titleY, panelWidth, 40}, "Select Lobby");
 
     if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
     {
         gameState = MENU;
     }
 
-    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Lobby 1"))
+    Rectangle view = {
+        (float)panelX,
+        (float)(titleY + 120),
+        (float)panelWidth,
+        520.0f};
+
+    Color panelBg = (Color){0x20, 0x39, 0x4f, 0xFF};
+    DrawRectangleRec(view, panelBg);
+
+    float contentHeight = lobbyCount * (btnH + spacing);
+
+    float maxScroll = fmaxf(0.0f, contentHeight - view.height);
+
+    Rectangle scrollbarArea = {
+        view.x + view.width - 16.0f,
+        view.y,
+        16.0f,
+        view.height};
+
+    int sbValue = (int)lobbyScrollY;
+    sbValue = GuiScrollBar(scrollbarArea, sbValue, 0, (int)maxScroll);
+    lobbyScrollY = (float)sbValue;
+
+    if (CheckCollisionPointRec(GetMousePosition(), view))
     {
-        gameState = GAME;
+        lobbyScrollY -= GetMouseWheelMove() * 40.0f;
+        if (lobbyScrollY < 0)
+            lobbyScrollY = 0;
+        if (lobbyScrollY > maxScroll)
+            lobbyScrollY = maxScroll;
     }
+
+    BeginScissorMode((int)view.x, (int)view.y, (int)view.width - 18, (int)view.height);
+
+    float y = view.y - lobbyScrollY + 4.0f;
+
+    for (int i = 0; i < lobbyCount; i++)
+    {
+        Rectangle btnRect = {
+            view.x + 8.0f,
+            y,
+            view.width - 32.0f,
+            btnH};
+
+        if (GuiButton(btnRect, lobbies[i].lobbyName))
+        {
+            gameState = GAME;
+        }
+
+        y += btnH + spacing;
+    }
+
+    EndScissorMode();
+
+    if(GuiButton((Rectangle){panelX, GAME_HEIGHT - 200, panelWidth, BUTTON_HEIGHT}, "Host Lobby"))
+    {
+        gameState = LOBBY_CREATOR;
+    }
+}
+
+void RenderLobbyCreatorGUI(){
+
+    int panelWidth = GAME_WIDTH / 3;
+    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
+
+    int titleY = 150;
+
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    GuiLabel((Rectangle){panelX, titleY, panelWidth, 40}, "Create Lobby");
+
+    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
+    {
+        gameState = MENU;
+    }
+
+    static char lobbyName[16] = "My Lobby";
+
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+    GuiLabel((Rectangle){panelX, titleY + 200, panelWidth, 30}, "Lobby Name:");
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
+    GuiTextBox((Rectangle){panelX, titleY + 320, panelWidth, BUTTON_HEIGHT}, lobbyName, sizeof(lobbyName), true);
+
+    if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
+    {
+        gameState = WAITING;
+    }
+
+}
+
+void RenderWaitingGUI(){
+
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    
+
+    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
+    {
+        gameState = MENU;
+    }
+
+    GuiLabel((Rectangle){0, GAME_HEIGHT/2, GAME_WIDTH, 30}, "Waiting for players...");
+
 }
 
 void RenderCreditsGUI()

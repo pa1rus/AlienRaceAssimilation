@@ -5,6 +5,11 @@
 #include "globals.h"
 #include "game.h"
 
+typedef struct {
+    const char *lobbyName;
+} Lobby;
+
+
 extern float timeUntilCountdown;
 extern bool countdownStarted;
 extern bool countdownFinished;
@@ -13,6 +18,8 @@ extern bool movementActivated;
 void InitGUI();
 void RenderMenuGUI();
 void RenderLobbySelectorGUI();
+void RenderLobbyCreatorGUI();
+void RenderWaitingGUI();
 void RenderCreditsGUI();
 void UpdateInGameGUI();
 void DrawInGameGUI();
