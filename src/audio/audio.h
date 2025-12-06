@@ -6,9 +6,10 @@
 
 extern Music countdownMusic;
 extern Music gameMusic;
+extern Sound engineSound;
 
 void InitAudio();
-void StartMusic();
+void StartGameAudio();
 void UpdateAudio();
 void UnloadAudio();
 

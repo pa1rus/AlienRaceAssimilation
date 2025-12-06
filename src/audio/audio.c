@@ -3,35 +3,62 @@
 Music countdownMusic;
 Music gameMusic;
 
+Sound engineSound;
+
+bool countdownStarted = false;
 bool countdownFinished = false;
 
-void InitAudio() {
+float engineDelayTimer = 0.0f;
+float timeUntillcountdown = 2.5f;
+
+void InitAudio() 
+{
     InitAudioDevice();
 
     countdownMusic = LoadMusicStream(COUNTDOWN_MUSIC_PATH);
     SetMusicVolume(countdownMusic, 0.25f);
+    countdownMusic.looping = false;
 
     gameMusic = LoadMusicStream(GAME_MUSIC_PATH);
     SetMusicVolume(gameMusic, 0.25f);
-
-    countdownMusic.looping = false;
     gameMusic.looping = true;
+
+    engineSound = LoadSound(ENIGINE_SOUND_PATH);
+    SetSoundVolume(engineSound, 0.35f);
 }
 
-void StartMusic() {
+void StartGameAudio()
+{
+    countdownStarted = false;
     countdownFinished = false;
+    engineDelayTimer = 0.0f;
 
-    SeekMusicStream(countdownMusic, 0);
-    PlayMusicStream(countdownMusic);
+    PlaySound(engineSound);
 }
 
-void UpdateAudio() {
+void UpdateAudio()
+{
+    float dt = GetFrameTime();
+
     UpdateMusicStream(countdownMusic);
     UpdateMusicStream(gameMusic);
 
-    if (!countdownFinished) {
+    if (!countdownStarted)
+    {
+        engineDelayTimer += dt;
 
-        if (!IsMusicStreamPlaying(countdownMusic)) {
+        if (engineDelayTimer >= timeUntillcountdown)
+        {
+            SeekMusicStream(countdownMusic, 0);
+            PlayMusicStream(countdownMusic);
+
+            countdownStarted = true;
+        }
+    }
+    else if (!countdownFinished)
+    {
+        if (!IsMusicStreamPlaying(countdownMusic))
+        {
             countdownFinished = true;
 
             SeekMusicStream(gameMusic, 0);
@@ -40,12 +67,15 @@ void UpdateAudio() {
     }
 }
 
-void UnloadAudio() {
-    
+void UnloadAudio() 
+{
     StopMusicStream(countdownMusic);
     StopMusicStream(gameMusic);
 
     UnloadMusicStream(countdownMusic);
     UnloadMusicStream(gameMusic);
+
+    UnloadSound(engineSound);
+
     CloseAudioDevice();
 }

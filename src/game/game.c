@@ -4,6 +4,7 @@ RenderTexture2D target;
 int scaledW, scaledH;
 
 int gameState = MENU;
+bool gameStarted = false;
 
 void InitGame()
 {
@@ -16,7 +17,6 @@ void InitGame()
     InitGameCamera();
     InitAnimations();
     InitAudio();
-    StartMusic();
 }
 
 void UpdateGame()
@@ -28,6 +28,11 @@ void UpdateGame()
     case LOBBY_SELECTOR:
         break;
     case GAME:
+
+        if (!gameStarted) {
+        StartGameAudio();
+        gameStarted = true;
+    }
         UpdatePlayer();
         UpdateGameCamera();
         UpdateAnimations();
