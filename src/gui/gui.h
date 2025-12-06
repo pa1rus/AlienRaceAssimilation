@@ -6,7 +6,7 @@
 #include "game.h"
 
 typedef struct {
-    const char *lobbyName;
+    char lobbyName[16];
 } Lobby;
 
 

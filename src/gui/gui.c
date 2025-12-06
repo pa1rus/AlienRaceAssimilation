@@ -27,6 +27,8 @@ bool countdownFinished = false;
 bool movementActivated = false;
 float movementTimer = 0.0f;
 
+char lobbyName[16] = "";
+
 void InitGUI()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
@@ -44,6 +46,8 @@ void InitGUI()
     GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, 0xF6D6BDFF);
     GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, 0xF6D6BDFF);
     GuiSetStyle(BUTTON, BORDER_WIDTH, 4);
+
+    GuiSetStyle(TEXTBOX, TEXT_PADDING, 32);
 }
 
 void RenderMenuGUI()
@@ -159,13 +163,14 @@ void RenderLobbySelectorGUI()
 
     EndScissorMode();
 
-    if(GuiButton((Rectangle){panelX, GAME_HEIGHT - 200, panelWidth, BUTTON_HEIGHT}, "Host Lobby"))
+    if (GuiButton((Rectangle){panelX, GAME_HEIGHT - 200, panelWidth, BUTTON_HEIGHT}, "Host Lobby"))
     {
         gameState = LOBBY_CREATOR;
     }
 }
 
-void RenderLobbyCreatorGUI(){
+void RenderLobbyCreatorGUI()
+{
 
     int panelWidth = GAME_WIDTH / 3;
     int panelX = GAME_WIDTH / 2 - panelWidth / 2;
@@ -180,33 +185,30 @@ void RenderLobbyCreatorGUI(){
         gameState = MENU;
     }
 
-    static char lobbyName[16] = "My Lobby";
-
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
     GuiLabel((Rectangle){panelX, titleY + 200, panelWidth, 30}, "Lobby Name:");
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
     GuiTextBox((Rectangle){panelX, titleY + 320, panelWidth, BUTTON_HEIGHT}, lobbyName, sizeof(lobbyName), true);
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
 
     if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
     {
         gameState = WAITING;
     }
-
 }
 
-void RenderWaitingGUI(){
+void RenderWaitingGUI()
+{
 
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-    
 
     if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
     {
         gameState = MENU;
     }
 
-    GuiLabel((Rectangle){0, GAME_HEIGHT/2, GAME_WIDTH, 30}, "Waiting for players...");
-
+    GuiLabel((Rectangle){0, GAME_HEIGHT / 2, GAME_WIDTH, 30}, "Waiting for players...");
 }
 
 void RenderCreditsGUI()
