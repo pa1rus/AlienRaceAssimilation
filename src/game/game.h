@@ -15,6 +15,8 @@ typedef enum
 {
     MENU = 0,
     LOBBY_SELECTOR,
+    LOBBY_CREATOR,
+    WAITING,
     GAME,
     CREDITS
 } GameState;

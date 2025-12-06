@@ -38,11 +38,12 @@ void UpdateGame()
         break;
     case GAME:
 
-        if (!gameStarted) {
-        StartGameAudio();
-        StartCountdown();
-        gameStarted = true;
-    }
+        if (!gameStarted)
+        {
+            StartGameAudio();
+            StartCountdown();
+            gameStarted = true;
+        }
         UpdatePlayer();
         UpdateFinish();
         UpdateGameCamera();
@@ -51,7 +52,7 @@ void UpdateGame()
         UpdateAudio();
         break;
     case CREDITS:
-    UpdateAudio();
+        UpdateAudio();
         break;
     }
 }
@@ -72,7 +73,14 @@ void DrawGame()
 
         break;
     case LOBBY_SELECTOR:
-     RenderLobbySelectorGUI();
+        RenderLobbySelectorGUI();
+
+        break;
+    case LOBBY_CREATOR:
+        RenderLobbyCreatorGUI();
+        break;
+    case WAITING:
+        RenderWaitingGUI();
 
         break;
     case GAME:
@@ -85,7 +93,7 @@ void DrawGame()
         DrawInGameGUI();
 
         break;
-        case CREDITS:
+    case CREDITS:
         break;
     }
 
