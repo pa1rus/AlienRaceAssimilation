@@ -8,6 +8,7 @@
 extern float timeUntilCountdown;
 extern bool countdownStarted;
 extern bool countdownFinished;
+extern bool movementActivated;
 
 void InitGUI();
 void RenderMenuGUI();

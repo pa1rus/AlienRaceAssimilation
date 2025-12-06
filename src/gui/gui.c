@@ -19,6 +19,8 @@ float fadeDuration = 0.6f;
 bool countdownStarted = false;
 bool countdownFinished = false;
 
+bool movementActivated = false;
+
 void InitGUI()
 {
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
@@ -37,6 +39,8 @@ void InitGUI()
     GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, 0xF6D6BDFF);
     GuiSetStyle(BUTTON, BORDER_WIDTH, 4);
 }
+
+
 
 void RenderMenuGUI()
 {
@@ -144,16 +148,14 @@ void UpdateCountdown()
         fadeTimer = 0.0f;
 
         countdownIndex++;
-        if (countdownIndex >= countdownCount)
+        if (countdownIndex >= countdownCount - 1){
+            movementActivated = true;
+        }
+        if (countdownIndex >= countdownCount )
         {
             countdownFinished = true;
+            
         }
-    }
-
-    if (countdownFinished && !IsMusicStreamPlaying(countdownMusic))
-    {
-        SeekMusicStream(gameMusic, 0);
-        PlayMusicStream(gameMusic);
     }
 }
 

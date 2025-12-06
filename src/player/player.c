@@ -102,16 +102,18 @@ void UpdatePlayer()
     float deltaTime = GetFrameTime();
     framesSincelastBump++;
 
-    if (IsKeyDown(KEY_W))
+    if (movementActivated)
     {
-        player.vel = Vector2Add(
-            player.vel, 
-            Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0,0}), deltaTime)
-        );
-        player.activeAnimation = PLAYER_FLY;
+        if (IsKeyDown(KEY_W))
+        {
+            player.vel = Vector2Add(
+                player.vel,
+                Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
+            player.activeAnimation = PLAYER_FLY;
+        }
+        else
+            player.activeAnimation = PLAYER_IDLE;
     }
-    else
-        player.activeAnimation = PLAYER_IDLE;
 
     if (IsKeyDown(KEY_D))
         player.angle += deltaTime * player.rotationSpeed;
@@ -122,9 +124,9 @@ void UpdatePlayer()
     if (speed > MAX_SPEED)
         player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
 
-    Vector2 center = (Vector2) {player.rect.x, player.rect.y};
+    Vector2 center = (Vector2){player.rect.x, player.rect.y};
 
-    Vector2 nextX = { center.x + player.vel.x * deltaTime, center.y };
+    Vector2 nextX = {center.x + player.vel.x * deltaTime, center.y};
     if (!CheckCollisionWithTiles(nextX, player.radius))
     {
         player.rect.x = nextX.x;
@@ -144,7 +146,7 @@ void UpdatePlayer()
         player.vel.x *= -0.25f;
     }
 
-    Vector2 nextY = { player.rect.x, center.y + player.vel.y * deltaTime };
+    Vector2 nextY = {player.rect.x, center.y + player.vel.y * deltaTime};
     if (!CheckCollisionWithTiles(nextY, player.radius))
     {
         player.rect.y = nextY.y;
@@ -164,7 +166,6 @@ void UpdatePlayer()
         player.vel.y *= -0.25f;
     }
 }
-
 
 void DrawPlayer()
 {
