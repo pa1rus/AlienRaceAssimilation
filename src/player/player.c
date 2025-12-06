@@ -100,51 +100,71 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
 void UpdatePlayer()
 {
     float deltaTime = GetFrameTime();
-
     framesSincelastBump++;
 
     if (IsKeyDown(KEY_W))
     {
-        player.vel = Vector2Add(player.vel, Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
+        player.vel = Vector2Add(
+            player.vel, 
+            Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0,0}), deltaTime)
+        );
         player.activeAnimation = PLAYER_FLY;
     }
-
     else
         player.activeAnimation = PLAYER_IDLE;
 
     if (IsKeyDown(KEY_D))
-        player.angle = fmod(player.angle + GetFrameTime() * player.rotationSpeed, 360.0);
-
+        player.angle += deltaTime * player.rotationSpeed;
     if (IsKeyDown(KEY_A))
-        player.angle = fmod(player.angle - GetFrameTime() * player.rotationSpeed, 360.0);
+        player.angle -= deltaTime * player.rotationSpeed;
 
     float speed = Vector2Length(player.vel);
     if (speed > MAX_SPEED)
         player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
 
-    Vector2 center = {
-        player.rect.x,
-        player.rect.y};
+    Vector2 center = (Vector2) {player.rect.x, player.rect.y};
 
-    Vector2 nextCenterX = {center.x + player.vel.x * deltaTime, center.y};
-
-    if (!CheckCollisionWithTiles(nextCenterX, player.radius))
-        player.rect.x += player.vel.x * deltaTime;
-    else if (framesSincelastBump >= 3)
+    Vector2 nextX = { center.x + player.vel.x * deltaTime, center.y };
+    if (!CheckCollisionWithTiles(nextX, player.radius))
     {
+        player.rect.x = nextX.x;
+    }
+    else
+    {
+        int sign = (player.vel.x > 0) ? -1 : 1;
+        for (int i = 0; i < 5; i++)
+        {
+            nextX.x += sign * 0.1f;
+            if (!CheckCollisionWithTiles(nextX, player.radius))
+            {
+                player.rect.x = nextX.x;
+                break;
+            }
+        }
         player.vel.x *= -0.25f;
-        framesSincelastBump = 0;
     }
 
-    Vector2 nextCenterY = {center.x, center.y + player.vel.y * deltaTime};
-    if (!CheckCollisionWithTiles(nextCenterY, player.radius))
-        player.rect.y += player.vel.y * deltaTime;
-    else if (framesSincelastBump > 5)
+    Vector2 nextY = { player.rect.x, center.y + player.vel.y * deltaTime };
+    if (!CheckCollisionWithTiles(nextY, player.radius))
     {
+        player.rect.y = nextY.y;
+    }
+    else
+    {
+        int sign = (player.vel.y > 0) ? -1 : 1;
+        for (int i = 0; i < 5; i++)
+        {
+            nextY.y += sign * 0.1f;
+            if (!CheckCollisionWithTiles(nextY, player.radius))
+            {
+                player.rect.y = nextY.y;
+                break;
+            }
+        }
         player.vel.y *= -0.25f;
-        framesSincelastBump = 0;
     }
 }
+
 
 void DrawPlayer()
 {
