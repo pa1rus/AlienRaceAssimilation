@@ -6,6 +6,7 @@
 #include "maps.h"
 #include "animations.h"
 #include "gui.h"
+#include <uuid/uuid.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -13,6 +14,7 @@
 
 typedef struct
 {
+    uuid_t id;
     Rectangle rect;
     Vector2 vel;
     Vector2 thrust;

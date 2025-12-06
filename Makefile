@@ -7,7 +7,7 @@ OUT_NATIVE = $(BUILD_DIR)/linux/game
 
 CC_NATIVE     = zig cc
 CFLAGS_NATIVE = -Wall -std=c99 $(INCDIR_SRC) $(INCDIR_LIB)
-LIBS_NATIVE   = -Llib -lraylib -lcjson
+LIBS_NATIVE   = -Llib -lraylib -lcjson -lhermes -lenet 
 
 .PHONY: all clean native web
 

@@ -1,0 +1,12 @@
+.PHONY	Makefile	/^.PHONY: all clean native web$/
+BUILD_DIR	Makefile	/^BUILD_DIR  = build$/
+CC_NATIVE	Makefile	/^CC_NATIVE     = zig cc$/
+CFLAGS_NATIVE	Makefile	/^CFLAGS_NATIVE = -Wall -std=c99 $(INCDIR_SRC) $(INC/
+INCDIR_LIB	Makefile	/^INCDIR_LIB = -Ilib$/
+INCDIR_SRC	Makefile	/^INCDIR_SRC = $(shell find src -type d -exec echo -/
+LIBS_NATIVE	Makefile	/^LIBS_NATIVE   = -Llib -lraylib -lcjson -lhermes -l/
+OUT_NATIVE	Makefile	/^OUT_NATIVE = $(BUILD_DIR)\/linux\/game$/
+SRC	Makefile	/^SRC        = $(shell find src -name "*.c")$/
+all	Makefile	/^all: native$/
+clean	Makefile	/^clean:$/
+native	Makefile	/^native:$/
