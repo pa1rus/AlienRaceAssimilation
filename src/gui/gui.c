@@ -9,9 +9,9 @@ int defaultFontSize = 64;
 float timeUntilCountdown = 2.4f;
 float countdownTimer = 0.0f;
 int countdownIndex = -1;
-const char* countdownTexts[] = {"3", "2", "1", "GO"};
+const char *countdownTexts[] = {"3", "2", "1", "GO"};
 const int countdownCount = 4;
-float countdownInterval = 0.8f; 
+float countdownInterval = 0.8f;
 
 float fadeTimer = 0.0f;
 float fadeDuration = 0.6f;
@@ -20,6 +20,7 @@ bool countdownStarted = false;
 bool countdownFinished = false;
 
 bool movementActivated = false;
+float movementTimer = 0.0f;
 
 void InitGUI()
 {
@@ -40,41 +41,42 @@ void InitGUI()
     GuiSetStyle(BUTTON, BORDER_WIDTH, 4);
 }
 
-
-
 void RenderMenuGUI()
 {
     int panelWidth = GAME_WIDTH / 3;
-    int panelX = GAME_WIDTH/2 - panelWidth/2;
+    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
 
     int y = 250;
-    int spacing = 50; 
+    int spacing = 50;
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, 128);
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
-    GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 30 }, "Alien Race");
+    GuiLabel((Rectangle){0, y, GAME_WIDTH, 30}, "Alien Race");
     y += spacing * 2;
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xC3A38AFF);
-    GuiLabel((Rectangle){ 0, y, GAME_WIDTH, 20 }, "Assimilation");
+    GuiLabel((Rectangle){0, y, GAME_WIDTH, 20}, "Assimilation");
     y += spacing * 3;
 
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Play")) {
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
+    {
         gameState = LOBBY_SELECTOR;
     }
     y += BUTTON_HEIGHT;
     y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Credits")) {
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Credits"))
+    {
         gameState = CREDITS;
     }
     y += BUTTON_HEIGHT;
     y += spacing;
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT  }, "Exit")) {
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Exit"))
+    {
         UnloadGame();
         CloseWindow();
         exit(0);
@@ -84,29 +86,34 @@ void RenderMenuGUI()
 void RenderLobbySelectorGUI()
 {
     int panelWidth = GAME_WIDTH / 3;
-    int panelX = GAME_WIDTH/2 - panelWidth/2;
+    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
 
     int y = 250;
     int spacing = 50;
 
-    GuiLabel((Rectangle){ panelX, y, panelWidth, 30 }, "Select Lobby");
+    GuiLabel((Rectangle){panelX, y, panelWidth, 30}, "Select Lobby");
     y += spacing * 2;
 
-    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back")) {
+    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
+    {
         gameState = MENU;
     }
 
-    if (GuiButton((Rectangle){ panelX, y, panelWidth, BUTTON_HEIGHT }, "Lobby 1")) {
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Lobby 1"))
+    {
         gameState = GAME;
     }
 }
 
-void RenderCreditsGUI(){
-    
+void RenderCreditsGUI()
+{
 }
 
 void RenderInGameGUI()
 {
+
+    UpdateMovementTimer();
+    DrawMovementTimer();
 }
 
 void StartCountdown()
@@ -120,7 +127,8 @@ void StartCountdown()
 
 void UpdateCountdown()
 {
-    if (countdownFinished) return;
+    if (countdownFinished)
+        return;
 
     float dt = GetFrameTime();
     countdownTimer += dt;
@@ -148,34 +156,55 @@ void UpdateCountdown()
         fadeTimer = 0.0f;
 
         countdownIndex++;
-        if (countdownIndex >= countdownCount - 1){
+        if (countdownIndex >= countdownCount - 1)
+        {
             movementActivated = true;
         }
-        if (countdownIndex >= countdownCount )
+        if (countdownIndex >= countdownCount)
         {
             countdownFinished = true;
-            
         }
     }
 }
 
-
 void DrawCountdown()
 {
-    if (!countdownStarted || countdownFinished || countdownIndex < 0) return;
+    if (!countdownStarted || countdownFinished || countdownIndex < 0)
+        return;
 
-    const char* text = countdownTexts[countdownIndex];
+    const char *text = countdownTexts[countdownIndex];
 
     float opacity = 1.0f - (fadeTimer / fadeDuration);
-    if (opacity < 0) opacity = 0;
+    if (opacity < 0)
+        opacity = 0;
 
     int fontSize = 180;
 
     Vector2 size = MeasureTextEx(GetFontDefault(), text, fontSize, 5);
-    Vector2 pos = { GAME_WIDTH / 2 - size.x / 2, GAME_HEIGHT / 2 - size.y / 2 };
+    Vector2 pos = {GAME_WIDTH / 2 - size.x / 2, GAME_HEIGHT / 2 - size.y / 2};
 
     Color c = WHITE;
     c.a = (unsigned char)(opacity * 255);
 
     DrawTextEx(GetFontDefault(), text, pos, fontSize, 5, c);
+}
+
+void UpdateMovementTimer()
+{
+    if (movementActivated)
+        movementTimer += GetFrameTime();
+}
+
+void DrawMovementTimer()
+{
+    if (!movementActivated)
+        return;
+
+    int minutes = (int)(movementTimer / 60.0f);
+    int seconds = (int)(movementTimer) % 60;
+    char buffer[16];
+    snprintf(buffer, sizeof(buffer), "%02d:%02d", minutes, seconds);
+
+    int fontSize = 32;
+    DrawText(buffer, 20, 20, fontSize, WHITE);
 }

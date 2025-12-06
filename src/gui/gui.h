@@ -20,4 +20,7 @@ void StartCountdown();
 void UpdateCountdown();
 void DrawCountdown();
 
+void UpdateMovementTimer();
+void DrawMovementTimer();
+
 #endif

@@ -77,6 +77,7 @@ void DrawGame()
         DrawPlayer();
         EndMode2D();
         DrawCountdown();
+        RenderInGameGUI();
         break;
         case CREDITS:
         break;
