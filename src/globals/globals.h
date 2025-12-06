@@ -7,6 +7,7 @@
 #define PLAYER_ANIMATION_FLY_PATH "./assets/animations/playerFly.png"
 #define COUNTDOWN_MUSIC_PATH "./assets/audio/countdownMusic.ogg"
 #define GAME_MUSIC_PATH "./assets/audio/gameMusic.ogg"
+#define MENU_MUSIC_PATH "./assets/audio/menuMusic.ogg"
 #define ENIGINE_SOUND_PATH "./assets/audio/engineSound.ogg"
 
 #define GAME_WIDTH  1920

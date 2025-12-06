@@ -24,8 +24,13 @@ void UpdateGame()
     switch (gameState)
     {
     case MENU:
+        UpdateAudio();
+        StartMenuAudio();
+
         break;
     case LOBBY_SELECTOR:
+        UpdateAudio();
+
         break;
     case GAME:
 
@@ -40,6 +45,7 @@ void UpdateGame()
         UpdateAudio();
         break;
     case CREDITS:
+    UpdateAudio();
         break;
     }
 }

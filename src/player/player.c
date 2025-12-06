@@ -1,6 +1,6 @@
 #include "player.h"
 
-#define MAX_SPEED 1000.0f
+#define MAX_SPEED 800.0f
 
 Player player = {0};
 
@@ -25,9 +25,9 @@ void InitPlayer()
         size};
 
     player.vel = (Vector2){0, 0};
-    player.thrust = (Vector2){0, -400.0f};
+    player.thrust = (Vector2){0, -500.0f};
     player.angle = 0.0f;
-    player.rotationSpeed = 270.0f;
+    player.rotationSpeed = 300.0f;
 
     player.radius = size * 0.25f;
 
