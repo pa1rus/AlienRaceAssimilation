@@ -15,6 +15,8 @@ void InitGame()
     InitPlayer();
     InitGameCamera();
     InitAnimations();
+    InitAudio();
+    StartMusic();
 }
 
 void UpdateGame()
@@ -30,6 +32,7 @@ void UpdateGame()
         UpdateGameCamera();
         UpdateAnimations();
         RenderInGameGUI();
+        UpdateMusicStream(countdownMusic);
         break;
     case CREDITS:
         break;
@@ -84,4 +87,8 @@ void UnloadGame()
 {
     if (gameMapData.tilesetTexture.id != 0)
         UnloadTexture(gameMapData.tilesetTexture);
+
+    UnloadAudio();
+    UnloadAnimations();
+    UnloadRenderTexture(target);
 }

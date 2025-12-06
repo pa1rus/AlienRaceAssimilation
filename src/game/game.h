@@ -8,6 +8,7 @@
 #include "player.h"
 #include "camera.h"
 #include "animations.h"
+#include "audio.h"
 
 typedef enum
 {
