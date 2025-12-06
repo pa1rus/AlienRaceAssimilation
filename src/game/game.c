@@ -5,7 +5,7 @@
 RenderTexture2D target;
 int scaledW, scaledH;
 
-int gameState = MENU;
+int gameState = CUTSCENE;
 bool gameStarted = false;
 
 void InitGame()
@@ -19,6 +19,7 @@ void InitGame()
     InitPlayer();
     InitGameCamera();
     InitAnimations();
+    InitCutscene();
     InitFinish();
     InitAudio();
 }
@@ -27,9 +28,14 @@ void UpdateGame()
 {
     switch (gameState)
     {
+    case CUTSCENE:
+        UpdateCutscene();
+        StartMenuAudio();
+        UpdateAudio();
+
+        break;
     case MENU:
         UpdateAudio();
-        StartMenuAudio();
 
         break;
     case LOBBY_SELECTOR:
@@ -68,6 +74,9 @@ void DrawGame()
 
     switch (gameState)
     {
+    case CUTSCENE:
+        DrawCutscene();
+        break;
     case MENU:
         RenderMenuGUI();
 
@@ -119,5 +128,6 @@ void UnloadGame()
 
     UnloadAudio();
     UnloadAnimations();
+    UnloadCutscene();
     UnloadRenderTexture(target);
 }

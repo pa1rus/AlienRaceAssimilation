@@ -50,6 +50,11 @@ void InitGUI()
     GuiSetStyle(TEXTBOX, TEXT_PADDING, 32);
 }
 
+void Drawcutscene()
+{
+
+}
+
 void RenderMenuGUI()
 {
     int panelWidth = GAME_WIDTH / 3;

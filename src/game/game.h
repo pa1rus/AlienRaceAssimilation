@@ -10,10 +10,12 @@
 #include "animations.h"
 #include "audio.h"
 #include "finish.h"
+#include "cutscene.h"
 
 typedef enum
 {
-    MENU = 0,
+    CUTSCENE = 0,
+    MENU,
     LOBBY_SELECTOR,
     LOBBY_CREATOR,
     WAITING,

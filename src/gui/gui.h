@@ -16,6 +16,7 @@ extern bool countdownFinished;
 extern bool movementActivated;
 
 void InitGUI();
+void Drawcutscene();
 void RenderMenuGUI();
 void RenderLobbySelectorGUI();
 void RenderLobbyCreatorGUI();

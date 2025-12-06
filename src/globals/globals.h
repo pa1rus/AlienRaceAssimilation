@@ -10,6 +10,13 @@
 #define MENU_MUSIC_PATH "./assets/audio/menuMusic.ogg"
 #define ENIGINE_SOUND_PATH "./assets/audio/engineSound.ogg"
 
+#define CUTSCENE_BG_1_PATH "./assets/cutscene/bg1.png"
+#define CUTSCENE_BG_2_PATH "./assets/cutscene/bg2.png"
+#define CUTSCENE_BG_3_PATH "./assets/cutscene/bg3.png"
+#define CUTSCENE_TEXT_1_PATH "./assets/cutscene/text1.png"
+#define CUTSCENE_TEXT_2_PATH "./assets/cutscene/text2.png"
+#define CUTSCENE_TEXT_3_PATH "./assets/cutscene/text3.png"
+
 #define FINISH_IDLE_TOP_PATH "./assets/animations/finishIdle.png"
 #define FINISH_IDLE_BOTTOM_PATH "./assets/animations/mouthIdle.png"
 #define FINISH_OPEN_TOP_PATH "./assets/animations/finishOpened.png"
