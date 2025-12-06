@@ -8,12 +8,13 @@ int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(GAME_WIDTH, GAME_HEIGHT, "Platformer");
+    hermesInit();
+    hermesGetUuid(&player.id);
 
     InitGame();
 
     SetTargetFPS(60);
 
-    hermesInit();
 
     while (!WindowShouldClose())
     {

@@ -1,4 +1,6 @@
 #include "game.h"
+#include "hermes.h"
+#include <uuid/uuid.h>
 
 RenderTexture2D target;
 int scaledW, scaledH;
@@ -8,6 +10,7 @@ bool gameStarted = false;
 
 void InitGame()
 {
+
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
