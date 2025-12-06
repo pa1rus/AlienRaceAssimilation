@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "game.h"
 #include "audio.h"
+#include "hermes.h"
 
 int main()
 {
@@ -12,11 +13,14 @@ int main()
 
     SetTargetFPS(60);
 
+    hermesInit();
+
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
 
+    hermesDeinit();
     UnloadGame();
     CloseWindow();
     return 0;
