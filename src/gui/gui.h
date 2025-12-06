@@ -14,7 +14,8 @@ void InitGUI();
 void RenderMenuGUI();
 void RenderLobbySelectorGUI();
 void RenderCreditsGUI();
-void RenderInGameGUI();
+void UpdateInGameGUI();
+void DrawInGameGUI();
 
 void StartCountdown();
 void UpdateCountdown();

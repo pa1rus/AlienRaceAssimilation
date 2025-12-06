@@ -42,8 +42,7 @@ void UpdateGame()
         UpdatePlayer();
         UpdateGameCamera();
         UpdateAnimations();
-        RenderInGameGUI();
-        UpdateCountdown();
+        UpdateInGameGUI();
         UpdateAudio();
         break;
     case CREDITS:
@@ -76,8 +75,7 @@ void DrawGame()
         DrawCurrentMap();
         DrawPlayer();
         EndMode2D();
-        DrawCountdown();
-        RenderInGameGUI();
+        DrawInGameGUI();
         break;
         case CREDITS:
         break;

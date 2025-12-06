@@ -109,10 +109,15 @@ void RenderCreditsGUI()
 {
 }
 
-void RenderInGameGUI()
+void UpdateInGameGUI()
 {
-
+    UpdateCountdown();
     UpdateMovementTimer();
+}
+
+void DrawInGameGUI()
+{
+    DrawCountdown();
     DrawMovementTimer();
 }
 
