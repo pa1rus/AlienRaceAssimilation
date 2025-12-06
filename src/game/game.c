@@ -36,12 +36,14 @@ void UpdateGame()
 
         if (!gameStarted) {
         StartGameAudio();
+        StartCountdown();
         gameStarted = true;
     }
         UpdatePlayer();
         UpdateGameCamera();
         UpdateAnimations();
         RenderInGameGUI();
+        UpdateCountdown();
         UpdateAudio();
         break;
     case CREDITS:
@@ -74,6 +76,7 @@ void DrawGame()
         DrawCurrentMap();
         DrawPlayer();
         EndMode2D();
+        DrawCountdown();
         break;
         case CREDITS:
         break;

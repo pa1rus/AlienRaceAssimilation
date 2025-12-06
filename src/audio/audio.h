@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "globals.h"
 #include "game.h"
+#include "gui.h"
 
 extern Music countdownMusic;
 extern Music gameMusic;

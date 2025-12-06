@@ -3,15 +3,10 @@
 Music countdownMusic;
 Music gameMusic;
 Music menuMusic;
-
 Sound engineSound;
 
-bool countdownStarted = false;
-bool countdownFinished = false;
 bool menuMusicStarted = false;
-
 float engineDelayTimer = 0.0f;
-float timeUntillcountdown = 2.5f;
 
 void InitAudio()
 {
@@ -38,17 +33,14 @@ void StartMenuAudio()
     if (!menuMusicStarted)
     {
         menuMusicStarted = true;
-    SeekMusicStream(menuMusic, 0);
-    PlayMusicStream(menuMusic);
+        SeekMusicStream(menuMusic, 0);
+        PlayMusicStream(menuMusic);
     }
 }
 
 void StartGameAudio()
 {
-    countdownStarted = false;
-    countdownFinished = false;
     engineDelayTimer = 0.0f;
-
     PlaySound(engineSound);
 }
 
@@ -59,48 +51,38 @@ void UpdateAudio()
         UpdateMusicStream(menuMusic);
         return;
     }
-    else
+
+    float dt = GetFrameTime();
+    UpdateMusicStream(countdownMusic);
+    UpdateMusicStream(gameMusic);
+
+    engineDelayTimer += dt;
+
+    if (!countdownStarted && engineDelayTimer >= timeUntilCountdown)
     {
+        countdownStarted = true;
+        SeekMusicStream(countdownMusic, 0);
+        PlayMusicStream(countdownMusic);
+    }
 
-        float dt = GetFrameTime();
-
-        UpdateMusicStream(countdownMusic);
-        UpdateMusicStream(gameMusic);
-
-        if (!countdownStarted)
-        {
-            engineDelayTimer += dt;
-
-            if (engineDelayTimer >= timeUntillcountdown)
-            {
-                SeekMusicStream(countdownMusic, 0);
-                PlayMusicStream(countdownMusic);
-
-                countdownStarted = true;
-            }
-        }
-        else if (!countdownFinished)
-        {
-            if (!IsMusicStreamPlaying(countdownMusic))
-            {
-                countdownFinished = true;
-
-                SeekMusicStream(gameMusic, 0);
-                PlayMusicStream(gameMusic);
-            }
-        }
+    if (countdownFinished && !IsMusicStreamPlaying(countdownMusic) && !IsMusicStreamPlaying(gameMusic))
+    {
+        SeekMusicStream(gameMusic, 0);
+        PlayMusicStream(gameMusic);
     }
 }
+
 
 void UnloadAudio()
 {
     StopMusicStream(countdownMusic);
     StopMusicStream(gameMusic);
+    StopMusicStream(menuMusic);
 
     UnloadMusicStream(countdownMusic);
     UnloadMusicStream(gameMusic);
+    UnloadMusicStream(menuMusic);
 
     UnloadSound(engineSound);
-
     CloseAudioDevice();
 }

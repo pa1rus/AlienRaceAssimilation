@@ -2,12 +2,22 @@
 
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
-#include <stdint.h>
-#include <stdio.h>
 
 const int BUTTON_HEIGHT = 100;
-
 int defaultFontSize = 64;
+
+float timeUntilCountdown = 2.4f;
+float countdownTimer = 0.0f;
+int countdownIndex = -1;
+const char* countdownTexts[] = {"3", "2", "1", "GO"};
+const int countdownCount = 4;
+float countdownInterval = 0.8f; 
+
+float fadeTimer = 0.0f;
+float fadeDuration = 0.6f;
+
+bool countdownStarted = false;
+bool countdownFinished = false;
 
 void InitGUI()
 {
@@ -93,4 +103,77 @@ void RenderCreditsGUI(){
 
 void RenderInGameGUI()
 {
+}
+
+void StartCountdown()
+{
+    countdownStarted = false;
+    countdownFinished = false;
+    countdownTimer = 0.0f;
+    fadeTimer = 0.0f;
+    countdownIndex = -1;
+}
+
+void UpdateCountdown()
+{
+    if (countdownFinished) return;
+
+    float dt = GetFrameTime();
+    countdownTimer += dt;
+
+    if (!countdownStarted)
+    {
+        if (countdownTimer >= timeUntilCountdown)
+        {
+            countdownStarted = true;
+            countdownTimer = 0.0f;
+            countdownIndex = 0;
+            fadeTimer = 0.0f;
+
+            SeekMusicStream(countdownMusic, 0);
+            PlayMusicStream(countdownMusic);
+        }
+        return;
+    }
+
+    fadeTimer += dt;
+
+    if (countdownTimer >= countdownInterval)
+    {
+        countdownTimer = 0.0f;
+        fadeTimer = 0.0f;
+
+        countdownIndex++;
+        if (countdownIndex >= countdownCount)
+        {
+            countdownFinished = true;
+        }
+    }
+
+    if (countdownFinished && !IsMusicStreamPlaying(countdownMusic))
+    {
+        SeekMusicStream(gameMusic, 0);
+        PlayMusicStream(gameMusic);
+    }
+}
+
+
+void DrawCountdown()
+{
+    if (!countdownStarted || countdownFinished || countdownIndex < 0) return;
+
+    const char* text = countdownTexts[countdownIndex];
+
+    float opacity = 1.0f - (fadeTimer / fadeDuration);
+    if (opacity < 0) opacity = 0;
+
+    int fontSize = 180;
+
+    Vector2 size = MeasureTextEx(GetFontDefault(), text, fontSize, 5);
+    Vector2 pos = { GAME_WIDTH / 2 - size.x / 2, GAME_HEIGHT / 2 - size.y / 2 };
+
+    Color c = WHITE;
+    c.a = (unsigned char)(opacity * 255);
+
+    DrawTextEx(GetFontDefault(), text, pos, fontSize, 5, c);
 }
