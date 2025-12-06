@@ -2,7 +2,6 @@
 #include "globals.h"
 #include "game.h"
 #include "audio.h"
-#include "hermes.h"
 
 int main()
 {
