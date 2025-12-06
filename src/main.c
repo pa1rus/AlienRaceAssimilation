@@ -8,8 +8,6 @@ int main()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(GAME_WIDTH, GAME_HEIGHT, "Platformer");
 
-    InitAudio();
-
     InitGame();
 
     SetTargetFPS(60);

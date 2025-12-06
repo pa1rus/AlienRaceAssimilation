@@ -9,6 +9,7 @@ extern Music gameMusic;
 
 void InitAudio();
 void StartMusic();
+void UpdateAudio();
 void UnloadAudio();
 
 #endif

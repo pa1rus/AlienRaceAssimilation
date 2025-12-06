@@ -3,26 +3,48 @@
 Music countdownMusic;
 Music gameMusic;
 
-void InitAudio(){
+bool countdownFinished = false;
 
+void InitAudio() {
     InitAudioDevice();
 
     countdownMusic = LoadMusicStream(COUNTDOWN_MUSIC_PATH);
-    SetMusicVolume(countdownMusic, 0.5f);
+    SetMusicVolume(countdownMusic, 0.25f);
 
-    countdownMusic = LoadMusicStream(GAME_MUSIC_PATH);
-    SetMusicVolume(countdownMusic, 0.5f);
-};  
+    gameMusic = LoadMusicStream(GAME_MUSIC_PATH);
+    SetMusicVolume(gameMusic, 0.25f);
 
-void StartMusic()
-{
+    countdownMusic.looping = false;
+    gameMusic.looping = true;
+}
+
+void StartMusic() {
+    countdownFinished = false;
 
     SeekMusicStream(countdownMusic, 0);
     PlayMusicStream(countdownMusic);
 }
 
-void UnloadAudio()
-{
+void UpdateAudio() {
+    UpdateMusicStream(countdownMusic);
+    UpdateMusicStream(gameMusic);
+
+    if (!countdownFinished) {
+
+        if (!IsMusicStreamPlaying(countdownMusic)) {
+            countdownFinished = true;
+
+            SeekMusicStream(gameMusic, 0);
+            PlayMusicStream(gameMusic);
+        }
+    }
+}
+
+void UnloadAudio() {
+    
+    StopMusicStream(countdownMusic);
+    StopMusicStream(gameMusic);
+
     UnloadMusicStream(countdownMusic);
     UnloadMusicStream(gameMusic);
     CloseAudioDevice();

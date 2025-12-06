@@ -32,7 +32,7 @@ void UpdateGame()
         UpdateGameCamera();
         UpdateAnimations();
         RenderInGameGUI();
-        UpdateMusicStream(countdownMusic);
+        UpdateAudio();
         break;
     case CREDITS:
         break;
