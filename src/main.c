@@ -21,7 +21,7 @@ int main()
         UpdateDrawFrame();
     }
 
-    //hermesDeinit();
+    hermesDeinit();
     UnloadGame();
     CloseWindow();
     return 0;

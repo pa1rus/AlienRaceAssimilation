@@ -67,6 +67,7 @@ void hermesSendGameData(uuid_t *client_id, float *x, float *y, float *angle);
 // The names parameter is a pointer to the start of a flat buffer of room names.
 void hermesPolling(
     uuid_t *uuid,             // Output: Receives the client's UUID (16 bytes)
+    uuid_t *uuids,             // Output: Receives the client's UUID (16 bytes)
     int *got_opponent,        // Output: Flag indicating an opponent joined (C int)
     char *names,              // Output: Flat buffer for room names (e.g., 16 rooms * 16 bytes/name)
     uint8_t *room_ammount,    // Input/Output: Number of rooms expected/received

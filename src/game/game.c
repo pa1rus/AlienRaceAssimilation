@@ -56,12 +56,14 @@ void UpdateGame()
                 NULL,
                 NULL,
                 NULL,
+                NULL,
                 NULL
                 );
         break;
     case LOBBY_SELECTOR:
         UpdateAudio();
         hermesPolling(
+                &player.id,
                 &lobbyIds,
                 NULL,
                 lobbyNames,
@@ -81,17 +83,39 @@ void UpdateGame()
         }
 
         break;
-    case LOBBY_SELECTOR:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-        break;
     case LOBBY_CREATOR:
         UpdateAudio();
         UpdateBackgroundAuto();
+        hermesPolling(
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL
+                );
         break;
     case WAITING:
         UpdateAudio();
         UpdateBackgroundAuto();
+        hermesPolling(
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL
+                );
 
         break;
     case GAME:

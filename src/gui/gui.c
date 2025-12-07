@@ -124,12 +124,10 @@ void RenderMenuGUI()
 
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
     {
-        gameState = LOBBY_SELECTOR;
-        hermesListRooms();
         
         // **FIXED ALLOCATION:** Ensure buffers are allocated or reallocated (safer approach)
         if (lobbyIds == NULL) {
-            lobbyIds = malloc(ALLOCATION_SIZE); // 160 bytes for 10 UUIDs
+            lobbyIds = malloc(ALLOCATION_SIZE); 
         }
         if (lobbyNames == NULL) {
             lobbyNames = malloc(ALLOCATION_SIZE); // 160 bytes for 10 names
@@ -140,6 +138,9 @@ void RenderMenuGUI()
             printf("Failed to allocate enough space for lobby buffers\n");
             exit(-3);
         }
+        gameState = LOBBY_SELECTOR;
+        hermesGetUuid();
+        hermesListRooms();
 
     }
     y += BUTTON_HEIGHT;
@@ -178,7 +179,9 @@ void RenderLobbySelectorGUI()
         gameState = MENU;
     }
 
-    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh")){}
+    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh")){
+        hermesListRooms();
+    }
 
     Rectangle view = {
         (float)panelX,
@@ -216,34 +219,31 @@ void RenderLobbySelectorGUI()
 
     float y = view.y - lobbyScrollY + 4.0f;
 
-    for (int i = 0; i < lobbyCount; i++)
-    {
-        // **CRITICAL FIX:** Use pointer arithmetic to get the start of the i-th 16-byte name.
-        char* current_name = lobbyNames + (i * NAME_SIZE); 
-        
-        // The check for empty names must check the actual data, not a literal string of spaces
-        // If the server zeroes out the unused room entries, checking for an empty string might be sufficient.
-        if (current_name[0] == '\0') {
-             continue;
-        }
+for (int i = 0; i < lobbyCount; i++) {
+    char* current_name = lobbyNames + (i * NAME_SIZE);
 
-        Rectangle btnRect = {
-            view.x + 8.0f,
-            y,
-            view.width - 32.0f,
-            btnH};
-
-        // Use the calculated pointer to the i-th name
-        if (GuiButton(btnRect, current_name))
-        {
-            gameState = GAME;
-            // Now you can access the i-th UUID as well:
-            // uuid_t* selected_id = (uuid_t*)(lobbyIds + (i * UUID_SIZE));
-            // hermesJoinRoom(my_client_id, selected_id);
-        }
-
-        y += btnH + spacing;
+    // Skip empty room slots (server should zero these)
+    if (current_name[0] == '\0') {
+        continue;
     }
+
+    Rectangle btnRect = {
+        view.x + 8.0f,
+        y,
+        view.width - 32.0f,
+        btnH
+    };
+
+    if (GuiButton(btnRect, current_name)) {
+        gameState = GAME;
+
+        // safely access the i-th UUID
+        uuid_t* selected_id = (uuid_t*)(lobbyIds + (i * UUID_SIZE));
+        hermesJoinRoom(&player.id, selected_id);
+    }
+
+    y += btnH + spacing;
+}
 
     EndScissorMode();
 
@@ -277,8 +277,10 @@ void RenderLobbyCreatorGUI()
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
 
+    //create room
     if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
     {
+        hermesCreateRoom(&player.id,&lobbyName);
         gameState = WAITING;
 
     }
