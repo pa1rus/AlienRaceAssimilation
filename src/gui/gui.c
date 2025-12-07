@@ -27,6 +27,13 @@ bool countdownFinished = false;
 bool movementActivated = false;
 float movementTimer = 0.0f;
 
+bool endMenuActive = false;
+float endMenuAlpha = 0.0f;
+float endMenuFadeSpeed = 2.0f;
+
+float lastRunTime = 0.0f;
+float bestTime = 0.0f;
+
 char lobbyName[16] = "";
 
 void InitGUI()
@@ -59,11 +66,11 @@ void InitGUI()
     GuiSetStyle(TEXTBOX, TEXT_COLOR_FOCUSED, 0xF6D6BDFF);
     GuiSetStyle(TEXTBOX, TEXT_COLOR_PRESSED, 0xF6D6BDFF);
 
+    bestTime = LoadValue();
 }
 
 void Drawcutscene()
 {
-
 }
 
 void RenderMenuGUI()
@@ -125,7 +132,9 @@ void RenderLobbySelectorGUI()
         gameState = MENU;
     }
 
-    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh")){}
+    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh"))
+    {
+    }
 
     Rectangle view = {
         (float)panelX,
@@ -209,7 +218,6 @@ void RenderLobbyCreatorGUI()
     GuiTextBox((Rectangle){panelX, titleY + 320, panelWidth, BUTTON_HEIGHT}, lobbyName, sizeof(lobbyName), true);
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
-
     if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
     {
         gameState = WAITING;
@@ -241,6 +249,64 @@ void UpdateInGameGUI()
 {
     UpdateCountdown();
     UpdateMovementTimer();
+
+    if (endMenuActive && endMenuAlpha < 1.0f)
+    {
+        endMenuAlpha += GetFrameTime() * endMenuFadeSpeed;
+        if (endMenuAlpha > 1.0f)
+            endMenuAlpha = 1.0f;
+    }
+}
+
+void DrawEndingScreen()
+{
+    if (!endMenuActive) return;
+
+    unsigned char a = (unsigned char)(endMenuAlpha * 200);
+    DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0,0,0,a});
+
+    int w = 600;
+    int h = 500;
+    int x = GAME_WIDTH/2 - w/2;
+    int y = GAME_HEIGHT/2 - h/2;
+
+    char lastBuf[32];
+    char bestBuf[32];
+    snprintf(lastBuf, sizeof(lastBuf), "Time: %.2fs", lastRunTime);
+    snprintf(bestBuf, sizeof(bestBuf), "Best: %.2fs", bestTime);
+
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
+    GuiLabel((Rectangle){x, y + 40, w, 40}, "Finished!");
+    GuiLabel((Rectangle){x, y + 120, w, 40}, lastBuf);
+    GuiLabel((Rectangle){x, y + 180, w, 40}, bestBuf);
+
+    int bw = 400;
+    int bh = 100;
+    int bx = GAME_WIDTH/2 - bw/2;
+
+    if (GuiButton((Rectangle){bx, y + 260, bw, bh}, "Replay"))
+    {
+        movementTimer = 0;
+        movementActivated = false;
+        playerFinished = false;
+        endMenuActive = false;
+        endMenuAlpha = 0.0f;
+
+        InitPlayer();
+        InitGameCamera();
+        StartCountdown();
+    }
+
+    if (GuiButton((Rectangle){bx, y + 380, bw, bh}, "Menu"))
+    {
+        gameState = MENU;
+        movementTimer = 0;
+        playerFinished = false;
+        endMenuActive = false;
+        endMenuAlpha = 0.0f;
+        ShowCursor();
+    }
 }
 
 void DrawInGameGUI()

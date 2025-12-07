@@ -6,7 +6,6 @@
 #include "maps.h"
 #include "animations.h"
 #include "gui.h"
-#include <uuid/uuid.h>
 #include "finish.h"
 
 #ifndef M_PI
@@ -15,7 +14,6 @@
 
 typedef struct
 {
-    uuid_t id;
     Rectangle rect;
     Vector2 vel;
     Vector2 thrust;

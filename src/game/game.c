@@ -1,6 +1,4 @@
 #include "game.h"
-#include "hermes.h"
-#include <uuid/uuid.h>
 
 RenderTexture2D target;
 int scaledW, scaledH;
@@ -8,6 +6,8 @@ int scaledW, scaledH;
 int gameState = CUTSCENE;
 bool gameStarted = false;
 bool menuShowed = false;
+
+const int BLACK_ALPHA = 50;
 
 void InitGame()
 {
@@ -99,27 +99,27 @@ void DrawGame()
         break;
     case MENU:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderMenuGUI();
         break;
     case LOBBY_SELECTOR:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderLobbySelectorGUI();
         break;
     case LOBBY_CREATOR:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderLobbyCreatorGUI();
         break;
     case WAITING:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderWaitingGUI();
         break;
     case GAME:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 30});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();
@@ -127,11 +127,13 @@ void DrawGame()
         DrawFinishTop();
         EndMode2D();
         DrawInGameGUI();
+        DrawEndingScreen();
+
 
         break;
     case CREDITS:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderCreditsGUI();
         break;
     }
