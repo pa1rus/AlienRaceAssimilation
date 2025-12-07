@@ -22,6 +22,7 @@ typedef enum {
 typedef struct {
     char *text;
     Vector2 position;
+    Color color;
 } Text2;
 
 void InitCutscene();

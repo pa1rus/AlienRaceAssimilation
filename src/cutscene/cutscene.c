@@ -12,9 +12,9 @@ const float FADE_DURATION = 1.0f;
 const float HOLD_DURATION = 2.0f;
 
 Text2 text2[3] = {
-    {"Assimilation succesful", {900, 700}},
-    {"Find your way back to the mother", {400, 975}},
-    {"And become her new favourite.", {900, 700}}
+    {"Assimilation succesful", {900, 700}, (Color){0xF6, 0xD6, 0xBD, 255}},
+    {"Find your way back to the mother", {400, 975}, (Color){0xF6, 0xD6, 0xBD, 255}},
+    {"And become her new favourite.", {400, 1000}, (Color){0x20, 0x39, 0x4f, 255}}
 };
 
 CutState cutState = CS_FADE_IN_BG;
@@ -29,10 +29,17 @@ void InitCutscene()
 
     slides[2].bg = LoadTexture(CUTSCENE_BG_3_PATH);
     slides[2].text = LoadTexture(CUTSCENE_TEXT_3_PATH);
+
 }
 
 void UpdateCutscene()
 {
+
+    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE))
+    {
+        gameState = MENU;
+        return;
+    }
     float dt = GetFrameTime();
     cutsceneTimer += dt;
 
@@ -114,10 +121,9 @@ void DrawCutscene()
 
     DrawTexture(s->text, 0, 0, txtCol);
 
-    Color txtCol2 = (Color){0xF6, 0xD6, 0xBD, 255};
-    txtCol2.a = (unsigned char)(255 * textFade2);
+    text2[cutsceneIndex].color.a = (unsigned char)(255 * textFade2);
 
-    DrawText(text2[cutsceneIndex].text, text2[cutsceneIndex].position.x, text2[cutsceneIndex].position.y, 60, txtCol2);
+    DrawText(text2[cutsceneIndex].text, text2[cutsceneIndex].position.x, text2[cutsceneIndex].position.y, 60, text2[cutsceneIndex].color);
 }
 
 void UnloadCutscene()
