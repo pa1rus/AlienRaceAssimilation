@@ -33,6 +33,20 @@ void UpdateBackground(Vector2 cameraPos)
     }
 }
 
+void UpdateBackgroundAuto()
+{
+    float dt = GetFrameTime();
+    for (int i = 0; i < LAYER_COUNT; i++)
+    {
+        layers[i].offset.x -= layers[i].scrollSpeedX * 30.0f * dt;
+        layers[i].offset.y += layers[i].scrollSpeedY * 30.0f * dt;
+
+        layers[i].offset.x = fmodf(layers[i].offset.x, layers[i].texture.width);
+        layers[i].offset.y = fmodf(layers[i].offset.y, layers[i].texture.height);
+    }
+}
+
+
 void DrawBackground()
 {
     for (int i = 0; i < LAYER_COUNT; i++)

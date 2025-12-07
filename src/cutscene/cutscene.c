@@ -8,7 +8,7 @@ float bgFade = 0.0f;
 float textFade = 0.0f;
 float textFade2 = 0.0f;
 
-const float FADE_DURATION = 1.0f;
+const float FADE_DURATION = 1.3f;
 const float HOLD_DURATION = 2.0f;
 
 Text2 text2[3] = {

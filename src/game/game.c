@@ -38,7 +38,9 @@ void UpdateGame()
         break;
     case MENU:
         UpdateAudio();
-        if (!menuShowed){
+        UpdateBackgroundAuto();
+        if (!menuShowed)
+        {
             ShowCursor();
             menuShowed = true;
         }
@@ -46,6 +48,15 @@ void UpdateGame()
         break;
     case LOBBY_SELECTOR:
         UpdateAudio();
+        UpdateBackgroundAuto();
+        break;
+    case LOBBY_CREATOR:
+        UpdateAudio();
+        UpdateBackgroundAuto();
+        break;
+    case WAITING:
+        UpdateAudio();
+        UpdateBackgroundAuto();
 
         break;
     case GAME:
@@ -67,6 +78,7 @@ void UpdateGame()
         break;
     case CREDITS:
         UpdateAudio();
+        UpdateBackgroundAuto();
         break;
     }
 }
@@ -86,22 +98,28 @@ void DrawGame()
         DrawCutscene();
         break;
     case MENU:
+        DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
         RenderMenuGUI();
-
         break;
     case LOBBY_SELECTOR:
+        DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
         RenderLobbySelectorGUI();
-
         break;
     case LOBBY_CREATOR:
+        DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
         RenderLobbyCreatorGUI();
         break;
     case WAITING:
+        DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
         RenderWaitingGUI();
-
         break;
     case GAME:
         DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();
@@ -112,6 +130,7 @@ void DrawGame()
 
         break;
     case CREDITS:
+        DrawBackground();
         break;
     }
 

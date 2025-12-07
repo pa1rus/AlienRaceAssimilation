@@ -14,6 +14,7 @@ typedef struct {
 
 void InitBackground();
 void UpdateBackground(Vector2 cameraPos);
+void UpdateBackgroundAuto();
 void DrawBackground();
 void UnloadBackground();
 
