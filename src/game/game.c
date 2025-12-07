@@ -19,6 +19,7 @@ void InitGame()
     InitMaps();
     InitPlayer();
     InitGameCamera();
+    InitBackground();
     InitAnimations();
     InitCutscene();
     InitFinish();
@@ -56,6 +57,7 @@ void UpdateGame()
             HideCursor();
             gameStarted = true;
         }
+        UpdateBackground(gameCamera.target);
         UpdatePlayer();
         UpdateFinish();
         UpdateGameCamera();
@@ -99,6 +101,7 @@ void DrawGame()
 
         break;
     case GAME:
+        DrawBackground();
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();

@@ -24,6 +24,10 @@
 #define FINISH_TRANSITION_TOP_PATH "./assets/animations/finishTransition.png"
 #define FINISH_TRANSITION_BOTTOM_PATH "./assets/animations/mouthTransition.png"
 
+#define BG_1_PATH "./assets/background/bg1.png"
+#define BG_2_PATH "./assets/background/bg2.png"
+#define BG_3_PATH "./assets/background/bg3.png"
+
 #define GAME_WIDTH  1920
 #define GAME_HEIGHT 1080
 #define FPS 60

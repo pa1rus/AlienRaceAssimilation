@@ -11,6 +11,7 @@
 #include "audio.h"
 #include "finish.h"
 #include "cutscene.h"
+#include "background.h"
 
 typedef enum
 {
