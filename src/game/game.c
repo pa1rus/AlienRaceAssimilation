@@ -119,7 +119,7 @@ void DrawGame()
         break;
     case GAME:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 30});
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();

@@ -2,7 +2,10 @@
 
 Finish finish;
 
-float distance = 700.0f;
+float animationDistance = 700.0f;
+float finishDistance = 50.0f;
+
+bool playerFinished = false;
 
 static Animation LoadFinishAnimation(const char *path, int frameCount, float fps)
 {
@@ -55,7 +58,14 @@ void UpdateFinish()
     Animation *topAnim    = &animations[finish.animTopID];
     Animation *bottomAnim = &animations[finish.animBottomID];
 
-    if (dist < distance)
+    if (dist < finishDistance && !playerFinished)
+    {
+        movementActivated = false;
+        playerFinished = true;
+    }
+    
+
+    if (dist < animationDistance)
     {
         if (finish.animTopID != FINISH_TRANSITION_TOP &&
             finish.animTopID != FINISH_OPEN_TOP)

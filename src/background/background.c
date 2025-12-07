@@ -7,8 +7,8 @@ ParallaxLayer layers[LAYER_COUNT];
 void InitBackground()
 {
     layers[0].texture = LoadTexture(BG_1_PATH);
-    layers[0].scrollSpeedX = 0.2f;
-    layers[0].scrollSpeedY = 0.1f;
+    layers[0].scrollSpeedX = 0.3f;
+    layers[0].scrollSpeedY = 0.3f;
     layers[0].offset = (Vector2){0,0};
 
     layers[1].texture = LoadTexture(BG_2_PATH);
