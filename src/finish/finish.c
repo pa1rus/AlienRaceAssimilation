@@ -2,7 +2,7 @@
 
 Finish finish;
 
-float distance = 250.0f;
+float distance = 700.0f;
 
 static Animation LoadFinishAnimation(const char *path, int frameCount, float fps)
 {
@@ -38,8 +38,8 @@ void InitFinish()
     animations[FINISH_IDLE_BOTTOM]    = LoadFinishAnimation(FINISH_IDLE_BOTTOM_PATH, 1,0);
     animations[FINISH_OPEN_TOP]       = LoadFinishAnimation(FINISH_OPEN_TOP_PATH, 4, 2);
     animations[FINISH_OPEN_BOTTOM]    = LoadFinishAnimation(FINISH_OPEN_BOTTOM_PATH, 1, 0);
-    animations[FINISH_TRANSITION_TOP] = LoadFinishAnimation(FINISH_TRANSITION_TOP_PATH, 8, 16);
-    animations[FINISH_TRANSITION_BOTTOM] = LoadFinishAnimation(FINISH_TRANSITION_BOTTOM_PATH, 8, 16);
+    animations[FINISH_TRANSITION_TOP] = LoadFinishAnimation(FINISH_TRANSITION_TOP_PATH, 8, 8);
+    animations[FINISH_TRANSITION_BOTTOM] = LoadFinishAnimation(FINISH_TRANSITION_BOTTOM_PATH, 8, 8);
 
     finish.animTopID = FINISH_IDLE_TOP;
     finish.animBottomID = FINISH_IDLE_BOTTOM;

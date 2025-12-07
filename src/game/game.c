@@ -7,6 +7,7 @@ int scaledW, scaledH;
 
 int gameState = CUTSCENE;
 bool gameStarted = false;
+bool menuShowed = false;
 
 void InitGame()
 {
@@ -36,6 +37,10 @@ void UpdateGame()
         break;
     case MENU:
         UpdateAudio();
+        if (!menuShowed){
+            ShowCursor();
+            menuShowed = true;
+        }
 
         break;
     case LOBBY_SELECTOR:
@@ -48,6 +53,7 @@ void UpdateGame()
         {
             StartGameAudio();
             StartCountdown();
+            HideCursor();
             gameStarted = true;
         }
         UpdatePlayer();
