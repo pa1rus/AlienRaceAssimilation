@@ -131,6 +131,8 @@ void DrawGame()
         break;
     case CREDITS:
         DrawBackground();
+        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        RenderCreditsGUI();
         break;
     }
 
