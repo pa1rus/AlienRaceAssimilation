@@ -1,15 +1,30 @@
+#include <uuid/uuid.h>
+#include <stdint.h>
+#include <stdlib.h> // For malloc and free
+#include <string.h> // For strcmp
+
 #include "gui.h"
+#include "hermes.h"
 
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+// --- Constants and Global Variables ---
+
+// Define the maximum number of rooms supported (10 rooms * 16 bytes/room = 160 bytes)
+#define MAX_ROOM_CAPACITY 10
+#define NAME_SIZE 16
+#define UUID_SIZE 16
+#define ALLOCATION_SIZE (MAX_ROOM_CAPACITY * NAME_SIZE) // 160 bytes
+
 float lobbyScrollY = 0.0f;
-Lobby lobbies[] = {
-    {"Lobby 1"}, {"Lobby 2"}, {"Lobby 3"}, {"Lobby 4"}, {"Lobby 5"}, {"Lobby 6"}, {"Lobby 7"}, {"Lobby 8"}};
-int lobbyCount = sizeof(lobbies) / sizeof(lobbies[0]);
+// The lobbies array was removed as it was unnecessary and misused
+uint8_t lobbyCount = 0; // Fixed type and initialization
 
 const int BUTTON_HEIGHT = 100;
 int defaultFontSize = 64;
+
+// ... countdown and game state variables ...
 
 float timeUntilCountdown = 2.4f;
 float countdownTimer = 0.0f;
@@ -29,8 +44,15 @@ float movementTimer = 0.0f;
 
 char lobbyName[16] = "";
 
+// These must be char* to be assigned the result of malloc
+char* lobbyIds = NULL;
+char* lobbyNames = NULL;
+
+// --- Function Implementations ---
+
 void InitGUI()
 {
+    // ... RayGui style setup (no change) ...
     GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
@@ -66,6 +88,20 @@ void Drawcutscene()
 
 }
 
+void UnloadGUI()
+{
+    // Important: Free memory when the buffers are no longer needed
+    if (lobbyIds != NULL) {
+        free(lobbyIds);
+        lobbyIds = NULL;
+    }
+    if (lobbyNames != NULL) {
+        free(lobbyNames);
+        lobbyNames = NULL;
+    }
+}
+
+
 void RenderMenuGUI()
 {
     int panelWidth = GAME_WIDTH / 3;
@@ -89,6 +125,22 @@ void RenderMenuGUI()
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
     {
         gameState = LOBBY_SELECTOR;
+        hermesListRooms();
+        
+        // **FIXED ALLOCATION:** Ensure buffers are allocated or reallocated (safer approach)
+        if (lobbyIds == NULL) {
+            lobbyIds = malloc(ALLOCATION_SIZE); // 160 bytes for 10 UUIDs
+        }
+        if (lobbyNames == NULL) {
+            lobbyNames = malloc(ALLOCATION_SIZE); // 160 bytes for 10 names
+        }
+
+        if (lobbyIds == NULL || lobbyNames == NULL)
+        {
+            printf("Failed to allocate enough space for lobby buffers\n");
+            exit(-3);
+        }
+
     }
     y += BUTTON_HEIGHT;
     y += spacing;
@@ -102,6 +154,7 @@ void RenderMenuGUI()
 
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Exit"))
     {
+        UnloadGUI(); // Added memory cleanup
         UnloadGame();
         CloseWindow();
         exit(0);
@@ -165,15 +218,28 @@ void RenderLobbySelectorGUI()
 
     for (int i = 0; i < lobbyCount; i++)
     {
+        // **CRITICAL FIX:** Use pointer arithmetic to get the start of the i-th 16-byte name.
+        char* current_name = lobbyNames + (i * NAME_SIZE); 
+        
+        // The check for empty names must check the actual data, not a literal string of spaces
+        // If the server zeroes out the unused room entries, checking for an empty string might be sufficient.
+        if (current_name[0] == '\0') {
+             continue;
+        }
+
         Rectangle btnRect = {
             view.x + 8.0f,
             y,
             view.width - 32.0f,
             btnH};
 
-        if (GuiButton(btnRect, lobbies[i].lobbyName))
+        // Use the calculated pointer to the i-th name
+        if (GuiButton(btnRect, current_name))
         {
             gameState = GAME;
+            // Now you can access the i-th UUID as well:
+            // uuid_t* selected_id = (uuid_t*)(lobbyIds + (i * UUID_SIZE));
+            // hermesJoinRoom(my_client_id, selected_id);
         }
 
         y += btnH + spacing;
@@ -187,6 +253,7 @@ void RenderLobbySelectorGUI()
     }
 }
 
+// ... other GUI functions (RenderLobbyCreatorGUI, RenderWaitingGUI, etc.) ...
 void RenderLobbyCreatorGUI()
 {
 
@@ -213,6 +280,7 @@ void RenderLobbyCreatorGUI()
     if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
     {
         gameState = WAITING;
+
     }
 }
 

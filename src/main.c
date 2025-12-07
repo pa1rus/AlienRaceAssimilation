@@ -6,10 +6,9 @@
 
 int main()
 {
-    SetConfigFlags(FLAG_FULLSCREEN_MODE); 
+    // SetConfigFlags(FLAG_FULLSCREEN_MODE); 
     InitWindow(GAME_WIDTH, GAME_HEIGHT, "Platformer");
-    //hermesInit();
-    //hermesGetUuid(&player.id);
+    hermesInit();
 
 
     InitGame();

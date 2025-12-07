@@ -1,6 +1,10 @@
+#include <stdint.h>
+#include <uuid/uuid.h>
+
 #include "game.h"
 #include "hermes.h"
-#include <uuid/uuid.h>
+#include "gui.h"
+#include "player.h"
 
 RenderTexture2D target;
 int scaledW, scaledH;
@@ -9,9 +13,12 @@ int gameState = CUTSCENE;
 bool gameStarted = false;
 bool menuShowed = false;
 
+extern uuid_t* lobbyIds;
+extern char* lobbyNames;
+extern uint8_t lobbyCount;
+
 void InitGame()
 {
-
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
@@ -38,6 +45,34 @@ void UpdateGame()
         break;
     case MENU:
         UpdateAudio();
+        StartMenuAudio();
+        hermesPolling(
+                &player.id,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL
+                );
+        break;
+    case LOBBY_SELECTOR:
+        UpdateAudio();
+        hermesPolling(
+                &lobbyIds,
+                NULL,
+                lobbyNames,
+                &lobbyCount,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL
+                );
         UpdateBackgroundAuto();
         if (!menuShowed)
         {
