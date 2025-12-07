@@ -18,7 +18,7 @@ all: native
 
 native:
 	@mkdir -p $(BUILD_DIR)/linux
-	$(CC_NATIVE) $(CFLAGS_NATIVE) $(SRC) -o $(OUT_NATIVE) $(LIBS_NATIVE)
+	$(CC_NATIVE) $(CFLAGS_NATIVE) $(SRC) -o $(OUT_NATIVE) $(LIBS_NATIVE) -d
 	./$(OUT_NATIVE)
 
 clean:
