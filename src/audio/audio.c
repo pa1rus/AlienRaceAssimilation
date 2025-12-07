@@ -35,6 +35,7 @@ void StartMenuAudio()
         menuMusicStarted = true;
         SeekMusicStream(menuMusic, 0);
         PlayMusicStream(menuMusic);
+        HideCursor();
     }
 }
 

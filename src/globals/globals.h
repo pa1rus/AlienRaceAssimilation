@@ -10,12 +10,23 @@
 #define MENU_MUSIC_PATH "./assets/audio/menuMusic.ogg"
 #define ENIGINE_SOUND_PATH "./assets/audio/engineSound.ogg"
 
+#define CUTSCENE_BG_1_PATH "./assets/cutscene/bg1.png"
+#define CUTSCENE_BG_2_PATH "./assets/cutscene/bg2.png"
+#define CUTSCENE_BG_3_PATH "./assets/cutscene/bg3.png"
+#define CUTSCENE_TEXT_1_PATH "./assets/cutscene/text1.png"
+#define CUTSCENE_TEXT_2_PATH "./assets/cutscene/text2.png"
+#define CUTSCENE_TEXT_3_PATH "./assets/cutscene/text3.png"
+
 #define FINISH_IDLE_TOP_PATH "./assets/animations/finishIdle.png"
 #define FINISH_IDLE_BOTTOM_PATH "./assets/animations/mouthIdle.png"
 #define FINISH_OPEN_TOP_PATH "./assets/animations/finishOpened.png"
 #define FINISH_OPEN_BOTTOM_PATH "./assets/animations/mouthOpened.png"
 #define FINISH_TRANSITION_TOP_PATH "./assets/animations/finishTransition.png"
 #define FINISH_TRANSITION_BOTTOM_PATH "./assets/animations/mouthTransition.png"
+
+#define BG_1_PATH "./assets/background/bg1.png"
+#define BG_2_PATH "./assets/background/bg2.png"
+#define BG_3_PATH "./assets/background/bg3.png"
 
 #define GAME_WIDTH  1920
 #define GAME_HEIGHT 1080

@@ -70,6 +70,22 @@ void InitGUI()
     GuiSetStyle(BUTTON, BORDER_WIDTH, 4);
 
     GuiSetStyle(TEXTBOX, TEXT_PADDING, 32);
+    GuiSetStyle(TEXTBOX, BORDER_WIDTH, 4);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_FOCUSED, 0xF6D6BDFF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_NORMAL, 0xF6D6BDFF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_PRESSED, 0xF6D6BDFF);
+    GuiSetStyle(TEXTBOX, BASE_COLOR_NORMAL, 0x4E495FFF);
+    GuiSetStyle(TEXTBOX, BASE_COLOR_FOCUSED, 0x4E495FFF);
+    GuiSetStyle(TEXTBOX, BASE_COLOR_PRESSED, 0x4E495FFF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_FOCUSED, 0xF6D6BDFF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_PRESSED, 0xF6D6BDFF);
+
+}
+
+void Drawcutscene()
+{
+
 }
 
 void UnloadGUI()
@@ -157,10 +173,12 @@ void RenderLobbySelectorGUI()
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     GuiLabel((Rectangle){panelX, titleY, panelWidth, 40}, "Select Lobby");
 
-    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
+    if (GuiButton((Rectangle){GAME_WIDTH - 450, 50, 400, BUTTON_HEIGHT}, "Back"))
     {
         gameState = MENU;
     }
+
+    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh")){}
 
     Rectangle view = {
         (float)panelX,
@@ -281,6 +299,10 @@ void RenderWaitingGUI()
 
 void RenderCreditsGUI()
 {
+    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
+    {
+        gameState = MENU;
+    }
 }
 
 void UpdateInGameGUI()
