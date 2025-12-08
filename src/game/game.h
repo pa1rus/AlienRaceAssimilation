@@ -17,9 +17,6 @@ typedef enum
 {
     CUTSCENE = 0,
     MENU,
-    LOBBY_SELECTOR,
-    LOBBY_CREATOR,
-    WAITING,
     GAME,
     CREDITS
 } GameState;

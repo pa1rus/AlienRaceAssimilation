@@ -34,7 +34,12 @@ float endMenuFadeSpeed = 2.0f;
 float lastRunTime = 0.0f;
 float bestTime = 0.0f;
 
-char lobbyName[16] = "";
+Texture2D kl;
+Texture2D mb;
+Texture2D jb;
+
+Color text;
+
 
 void InitGUI()
 {
@@ -66,6 +71,13 @@ void InitGUI()
     GuiSetStyle(TEXTBOX, TEXT_COLOR_FOCUSED, 0xF6D6BDFF);
     GuiSetStyle(TEXTBOX, TEXT_COLOR_PRESSED, 0xF6D6BDFF);
 
+    kl = LoadTexture(KL_PATH);
+    mb = LoadTexture(MB_PATH);
+    jb = LoadTexture(JB_PATH);
+
+    text = (Color){0xF6, 0xD6, 0xBD, 255};
+
+
     bestTime = LoadValue();
 }
 
@@ -95,7 +107,7 @@ void RenderMenuGUI()
 
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
     {
-        gameState = LOBBY_SELECTOR;
+        gameState = GAME;
     }
     y += BUTTON_HEIGHT;
     y += spacing;
@@ -115,135 +127,92 @@ void RenderMenuGUI()
     }
 }
 
-void RenderLobbySelectorGUI()
-{
-    int panelWidth = GAME_WIDTH / 3;
-    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
-
-    int titleY = 150;
-    int spacing = 20;
-    float btnH = (float)BUTTON_HEIGHT;
-
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-    GuiLabel((Rectangle){panelX, titleY, panelWidth, 40}, "Select Lobby");
-
-    if (GuiButton((Rectangle){GAME_WIDTH - 450, 50, 400, BUTTON_HEIGHT}, "Back"))
-    {
-        gameState = MENU;
-    }
-
-    if (GuiButton((Rectangle){GAME_WIDTH - 450, 200, 400, BUTTON_HEIGHT}, "Refresh"))
-    {
-    }
-
-    Rectangle view = {
-        (float)panelX,
-        (float)(titleY + 120),
-        (float)panelWidth,
-        520.0f};
-
-    Color panelBg = (Color){0x20, 0x39, 0x4f, 0xFF};
-    DrawRectangleRec(view, panelBg);
-
-    float contentHeight = lobbyCount * (btnH + spacing);
-
-    float maxScroll = fmaxf(0.0f, contentHeight - view.height);
-
-    Rectangle scrollbarArea = {
-        view.x + view.width - 16.0f,
-        view.y,
-        16.0f,
-        view.height};
-
-    int sbValue = (int)lobbyScrollY;
-    sbValue = GuiScrollBar(scrollbarArea, sbValue, 0, (int)maxScroll);
-    lobbyScrollY = (float)sbValue;
-
-    if (CheckCollisionPointRec(GetMousePosition(), view))
-    {
-        lobbyScrollY -= GetMouseWheelMove() * 40.0f;
-        if (lobbyScrollY < 0)
-            lobbyScrollY = 0;
-        if (lobbyScrollY > maxScroll)
-            lobbyScrollY = maxScroll;
-    }
-
-    BeginScissorMode((int)view.x, (int)view.y, (int)view.width - 18, (int)view.height);
-
-    float y = view.y - lobbyScrollY + 4.0f;
-
-    for (int i = 0; i < lobbyCount; i++)
-    {
-        Rectangle btnRect = {
-            view.x + 8.0f,
-            y,
-            view.width - 32.0f,
-            btnH};
-
-        if (GuiButton(btnRect, lobbies[i].lobbyName))
-        {
-            gameState = GAME;
-        }
-
-        y += btnH + spacing;
-    }
-
-    EndScissorMode();
-
-    if (GuiButton((Rectangle){panelX, GAME_HEIGHT - 200, panelWidth, BUTTON_HEIGHT}, "Host Lobby"))
-    {
-        gameState = LOBBY_CREATOR;
-    }
-}
-
-void RenderLobbyCreatorGUI()
-{
-
-    int panelWidth = GAME_WIDTH / 3;
-    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
-
-    int titleY = 150;
-
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-    GuiLabel((Rectangle){panelX, titleY, panelWidth, 40}, "Create Lobby");
-
-    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
-    {
-        gameState = MENU;
-    }
-
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
-    GuiLabel((Rectangle){panelX, titleY + 200, panelWidth, 30}, "Lobby Name:");
-
-    GuiTextBox((Rectangle){panelX, titleY + 320, panelWidth, BUTTON_HEIGHT}, lobbyName, sizeof(lobbyName), true);
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-
-    if (GuiButton((Rectangle){panelX, titleY + 480, panelWidth, BUTTON_HEIGHT}, "Create"))
-    {
-        gameState = WAITING;
-    }
-}
-
-void RenderWaitingGUI()
-{
-
-    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-
-    if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
-    {
-        gameState = MENU;
-    }
-
-    GuiLabel((Rectangle){0, GAME_HEIGHT / 2, GAME_WIDTH, 30}, "Waiting for players...");
-}
-
 void RenderCreditsGUI()
 {
+    GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     if (GuiButton((Rectangle){GAME_WIDTH - 350, 50, 300, BUTTON_HEIGHT}, "Back"))
-    {
         gameState = MENU;
-    }
+
+    int colSpacing = 80;
+    int startY = 300;
+    float multiplier = 5.0f;
+
+    int spacingText = 30;
+
+    int y = startY;
+    int imgW = kl.width * multiplier;
+    int imgH = kl.height * multiplier;
+    int colWidth = imgW + 40;
+    int totalWidth = colWidth * 3 + colSpacing * 2;
+    int startX = GAME_WIDTH / 2 - totalWidth / 2;
+
+    int centerX = startX + colWidth / 2;
+
+    Vector2 size = MeasureTextEx(GetFontDefault(), "Krzysztof L.", 32, 0);
+    DrawText("Krzysztof L.", centerX - size.x / 2, y, 32, text);
+    y += spacingText;
+
+    DrawTexturePro(
+        kl,
+        (Rectangle){0,0,kl.width,kl.height},
+        (Rectangle){centerX - imgW/2, y, imgW, imgH},
+        (Vector2){0,0},
+        0,
+        WHITE
+    );
+    y += imgH + spacingText;
+
+    size = MeasureTextEx(GetFontDefault(), "Client Logic & Sounds", 24, 0);
+    DrawText("Client Logic & Sounds", centerX - size.x / 2, y, 24, text);
+
+    y = startY;
+    int col2X = startX + colWidth + colSpacing;
+    centerX = col2X + colWidth / 2;
+
+    size = MeasureTextEx(GetFontDefault(), "Mikolaj B.", 32, 0);
+    DrawText("Mikolaj B.", centerX - size.x / 2, y, 32, text);
+    y += spacingText;
+
+    imgW = mb.width * multiplier;
+    imgH = mb.height * multiplier;
+    DrawTexturePro(
+        mb,
+        (Rectangle){0,0,mb.width,mb.height},
+        (Rectangle){centerX - imgW/2, y, imgW, imgH},
+        (Vector2){0,0},
+        0,
+        WHITE
+    );
+    y += imgH + spacingText;
+
+    size = MeasureTextEx(GetFontDefault(), "Graphics & Level Design", 24, 0);
+    DrawText("Graphics & Level Design", centerX - size.x / 2, y, 24, text);
+
+    y = startY;
+    int col3X = startX + (colWidth + colSpacing) * 2;
+    centerX = col3X + colWidth / 2;
+
+    size = MeasureTextEx(GetFontDefault(), "Jan B.", 32, 0);
+    DrawText("Jan B.", centerX - size.x / 2, y, 32, text);
+    y += spacingText;
+
+    imgW = jb.width * multiplier;
+    imgH = jb.height * multiplier;
+    DrawTexturePro(
+        jb,
+        (Rectangle){0,0,jb.width,jb.height},
+        (Rectangle){centerX - imgW/2, y, imgW, imgH},
+        (Vector2){0,0},
+        0,
+        WHITE
+    );
+    y += imgH + spacingText;
+
+    size = MeasureTextEx(GetFontDefault(), "Server", 24, 0);
+    DrawText("Server", centerX - size.x / 2, y, 24, text);
 }
+
+
 
 void UpdateInGameGUI()
 {
@@ -406,4 +375,11 @@ void DrawMovementTimer()
 
     int fontSize = 32;
     DrawText(buffer, 20, 20, fontSize, WHITE);
+}
+
+void UnloadGUI()
+{
+    UnloadTexture(kl);
+    UnloadTexture(mb);
+    UnloadTexture(jb);
 }

@@ -28,6 +28,10 @@
 #define BG_2_PATH "./assets/background/bg2.png"
 #define BG_3_PATH "./assets/background/bg3.png"
 
+#define KL_PATH "./assets/credits/kl.png"
+#define MB_PATH "./assets/credits/mb.png"
+#define JB_PATH "./assets/credits/jb.png"
+
 #define GAME_WIDTH  1920
 #define GAME_HEIGHT 1080
 #define FPS 60

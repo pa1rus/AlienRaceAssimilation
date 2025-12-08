@@ -36,6 +36,7 @@ web:
 	--preload-file assets/animations@/assets/animations \
 	--preload-file assets/cutscene@/assets/cutscene \
 	--preload-file assets/maps@/assets/maps \
+	--preload-file assets/credits@/assets/credits \
 	--shell-file src/minshell.html \
 	-o $(OUT_WEB)
 

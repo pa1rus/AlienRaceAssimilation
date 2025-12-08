@@ -38,5 +38,6 @@ void DrawCountdown();
 
 void UpdateMovementTimer();
 void DrawMovementTimer();
+void UnloadGUI();
 
 #endif

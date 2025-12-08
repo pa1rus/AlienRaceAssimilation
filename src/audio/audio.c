@@ -21,7 +21,7 @@ void InitAudio()
     gameMusic.looping = true;
 
     menuMusic = LoadMusicStream(MENU_MUSIC_PATH);
-    SetMusicVolume(menuMusic, 0.25f);
+    SetMusicVolume(menuMusic, 0.35f);
     menuMusic.looping = true;
 
     engineSound = LoadSound(ENIGINE_SOUND_PATH);

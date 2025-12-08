@@ -46,19 +46,6 @@ void UpdateGame()
         }
 
         break;
-    case LOBBY_SELECTOR:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-        break;
-    case LOBBY_CREATOR:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-        break;
-    case WAITING:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-
-        break;
     case GAME:
 
         if (!gameStarted)
@@ -102,21 +89,7 @@ void DrawGame()
         DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
         RenderMenuGUI();
         break;
-    case LOBBY_SELECTOR:
-        DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
-        RenderLobbySelectorGUI();
-        break;
-    case LOBBY_CREATOR:
-        DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
-        RenderLobbyCreatorGUI();
-        break;
-    case WAITING:
-        DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
-        RenderWaitingGUI();
-        break;
+
     case GAME:
         DrawBackground();
         DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
@@ -162,4 +135,5 @@ void UnloadGame()
     UnloadAnimations();
     UnloadCutscene();
     UnloadRenderTexture(target);
+    UnloadGUI();
 }
