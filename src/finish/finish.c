@@ -63,15 +63,15 @@ void UpdateFinish()
         movementActivated = false;
         playerFinished = true;
 
-        if (lastRunTime < bestTime || bestTime == 0.0f){
-            SaveValue(lastRunTime);
+        lastRunTime = movementTimer;
+
+        if (bestTime == 0.0f || lastRunTime < bestTime)
+        {
+            bestTime = lastRunTime;
+            SaveValue(bestTime);
         }
 
         ShowCursor();
-
-        lastRunTime = movementTimer;
-        if (bestTime == 0.0f || lastRunTime < bestTime)
-            bestTime = lastRunTime;
 
         endMenuActive = true;
         endMenuAlpha = 0.0f;

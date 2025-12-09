@@ -15,6 +15,8 @@ void InitGame()
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
+    bestTime = LoadValue();
+
     InitGUI();
     InitMaps();
     InitPlayer();
@@ -25,6 +27,40 @@ void InitGame()
     InitFinish();
     InitAudio();
 }
+
+void PrepareGame(){
+
+    gameStarted = false;
+    menuShowed = false;
+
+    movementActivated = false;
+    movementTimer = 0.0f;
+
+    countdownStarted = false;
+    countdownFinished = false;
+    countdownTimer = 0.0f;
+    countdownIndex = -1;
+    fadeTimer = 0.0f;
+    ResetPlayer();
+
+    endMenuActive = false;
+    playerFinished = false;
+    endMenuAlpha = 0.0f;
+
+    finish.animTopID = FINISH_IDLE_TOP;
+    finish.animBottomID = FINISH_IDLE_BOTTOM;
+}
+
+void StartGame()
+{
+    
+
+    StartCountdown();
+    StartGameAudio();
+
+    HideCursor();
+}
+
 
 void UpdateGame()
 {
@@ -39,22 +75,40 @@ void UpdateGame()
     case MENU:
         UpdateAudio();
         UpdateBackgroundAuto();
+
         if (!menuShowed)
         {
             ShowCursor();
             menuShowed = true;
+            endMenuActive = false;
+            endMenuAlpha = 0.0f;
+            gameStarted = false;
+            movementActivated = false;
+            movementTimer = 0.0f;
+            playerFinished = false;
+            countdownStarted = false;
+            countdownFinished = false;
         }
-
         break;
+
     case GAME:
 
         if (!gameStarted)
         {
+            endMenuActive = false;
+            endMenuAlpha = 0.0f;
+            movementActivated = false;
+            movementTimer = 0.0f;
+            playerFinished = false;
+            countdownStarted = false;
+            countdownFinished = false;
+
             StartGameAudio();
             StartCountdown();
             HideCursor();
             gameStarted = true;
         }
+
         UpdateBackground(gameCamera.target);
         UpdatePlayer();
         UpdateFinish();
@@ -86,13 +140,13 @@ void DrawGame()
         break;
     case MENU:
         DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         RenderMenuGUI();
         break;
 
     case GAME:
         DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();
@@ -102,11 +156,10 @@ void DrawGame()
         DrawInGameGUI();
         DrawEndingScreen();
 
-
         break;
     case CREDITS:
         DrawBackground();
-        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color) {0, 0, 0, BLACK_ALPHA});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         RenderCreditsGUI();
         break;
     }

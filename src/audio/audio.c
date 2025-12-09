@@ -41,6 +41,8 @@ void StartMenuAudio()
 
 void StartGameAudio()
 {
+    StopMusicStream(countdownMusic);
+    StopMusicStream(gameMusic);
     engineDelayTimer = 0.0f;
     PlaySound(engineSound);
 }

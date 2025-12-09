@@ -12,14 +12,16 @@ int framesSincelastBump = 0;
 
 void InitPlayer()
 {
+    ResetPlayer();
+
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
 
     float size = tileSize * tileScale;
 
     player.rect = (Rectangle){
-        playerSpawnPoints[gameMapData.currentMapIndex].x * size,
-        playerSpawnPoints[gameMapData.currentMapIndex].y * size,
+        playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2,
+        playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2,
         size,
         size};
 
@@ -31,6 +33,20 @@ void InitPlayer()
     player.radius = size * 0.25f;
 
     player.activeAnimation = PLAYER_IDLE;
+}
+
+void ResetPlayer()
+{
+
+    float tileSize = (float)gameMapData.tileSize;
+    float tileScale = (float)gameMapData.tileScale;
+
+    float size = tileSize * tileScale;
+
+    player.rect.x = playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2;
+    player.rect.y = playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2;
+    player.vel = (Vector2){0, 0};
+    player.angle = 0.0f;
 }
 
 Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
@@ -98,23 +114,20 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
 
 void UpdatePlayer()
 {
-    if (!playerFinished)
+    if (!playerFinished && movementActivated)
     {
         float deltaTime = GetFrameTime();
         framesSincelastBump++;
 
-        if (movementActivated)
+        if (IsKeyDown(KEY_W))
         {
-            if (IsKeyDown(KEY_W))
-            {
-                player.vel = Vector2Add(
-                    player.vel,
-                    Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
-                player.activeAnimation = PLAYER_FLY;
-            }
-            else
-                player.activeAnimation = PLAYER_IDLE;
+            player.vel = Vector2Add(
+                player.vel,
+                Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
+            player.activeAnimation = PLAYER_FLY;
         }
+        else
+            player.activeAnimation = PLAYER_IDLE;
 
         if (IsKeyDown(KEY_D))
             player.angle += deltaTime * player.rotationSpeed;

@@ -9,7 +9,7 @@
     #include <emscripten.h>
 #endif
 
-bool SaveValue(int value);
-int LoadValue();
+bool SaveValue(float value);
+float LoadValue();
 
 #endif

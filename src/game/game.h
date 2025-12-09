@@ -22,12 +22,15 @@ typedef enum
 } GameState;
 
 extern int gameState;
+extern bool gameStarted;
 
 extern RenderTexture2D target;
 extern int scaledW;
 extern int scaledH;
 
 void InitGame();
+void StartGame();
+void PrepareGame();
 void UpdateGame();
 void DrawGame();
 void UpdateDrawFrame();

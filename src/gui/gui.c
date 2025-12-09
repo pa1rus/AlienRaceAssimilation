@@ -3,11 +3,6 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-float lobbyScrollY = 0.0f;
-Lobby lobbies[] = {
-    {"Lobby 1"}, {"Lobby 2"}, {"Lobby 3"}, {"Lobby 4"}, {"Lobby 5"}, {"Lobby 6"}, {"Lobby 7"}, {"Lobby 8"}};
-int lobbyCount = sizeof(lobbies) / sizeof(lobbies[0]);
-
 const int BUTTON_HEIGHT = 100;
 int defaultFontSize = 64;
 
@@ -32,14 +27,13 @@ float endMenuAlpha = 0.0f;
 float endMenuFadeSpeed = 2.0f;
 
 float lastRunTime = 0.0f;
-float bestTime = 0.0f;
+float bestTime;
 
 Texture2D kl;
 Texture2D mb;
 Texture2D jb;
 
 Color text;
-
 
 void InitGUI()
 {
@@ -76,9 +70,6 @@ void InitGUI()
     jb = LoadTexture(JB_PATH);
 
     text = (Color){0xF6, 0xD6, 0xBD, 255};
-
-
-    bestTime = LoadValue();
 }
 
 void Drawcutscene()
@@ -125,6 +116,17 @@ void RenderMenuGUI()
         CloseWindow();
         exit(0);
     }
+    if (bestTime > 0.0f)
+    {
+        char buf[64];
+        char timeBuf[32];
+        FormatTime(timeBuf, sizeof(timeBuf), bestTime);
+
+        snprintf(buf, sizeof(buf), "Best time: %s", timeBuf);
+
+        Vector2 size = MeasureTextEx(GetFontDefault(), buf, 32, 0);
+        DrawText(buf, GAME_WIDTH / 2 - size.x / 2, 975, 32, text);
+    }
 }
 
 void RenderCreditsGUI()
@@ -154,12 +156,11 @@ void RenderCreditsGUI()
 
     DrawTexturePro(
         kl,
-        (Rectangle){0,0,kl.width,kl.height},
-        (Rectangle){centerX - imgW/2, y, imgW, imgH},
-        (Vector2){0,0},
+        (Rectangle){0, 0, kl.width, kl.height},
+        (Rectangle){centerX - imgW / 2, y, imgW, imgH},
+        (Vector2){0, 0},
         0,
-        WHITE
-    );
+        WHITE);
     y += imgH + spacingText;
 
     size = MeasureTextEx(GetFontDefault(), "Client Logic & Sounds", 24, 0);
@@ -177,12 +178,11 @@ void RenderCreditsGUI()
     imgH = mb.height * multiplier;
     DrawTexturePro(
         mb,
-        (Rectangle){0,0,mb.width,mb.height},
-        (Rectangle){centerX - imgW/2, y, imgW, imgH},
-        (Vector2){0,0},
+        (Rectangle){0, 0, mb.width, mb.height},
+        (Rectangle){centerX - imgW / 2, y, imgW, imgH},
+        (Vector2){0, 0},
         0,
-        WHITE
-    );
+        WHITE);
     y += imgH + spacingText;
 
     size = MeasureTextEx(GetFontDefault(), "Graphics & Level Design", 24, 0);
@@ -200,19 +200,16 @@ void RenderCreditsGUI()
     imgH = jb.height * multiplier;
     DrawTexturePro(
         jb,
-        (Rectangle){0,0,jb.width,jb.height},
-        (Rectangle){centerX - imgW/2, y, imgW, imgH},
-        (Vector2){0,0},
+        (Rectangle){0, 0, jb.width, jb.height},
+        (Rectangle){centerX - imgW / 2, y, imgW, imgH},
+        (Vector2){0, 0},
         0,
-        WHITE
-    );
+        WHITE);
     y += imgH + spacingText;
 
     size = MeasureTextEx(GetFontDefault(), "Server", 24, 0);
     DrawText("Server", centerX - size.x / 2, y, 24, text);
 }
-
-
 
 void UpdateInGameGUI()
 {
@@ -227,32 +224,48 @@ void UpdateInGameGUI()
     }
 }
 
+void FormatTime(char *buffer, int size, float timeSec)
+{
+    int minutes = (int)(timeSec / 60.0f);
+    int seconds = (int)timeSec % 60;
+    int milliseconds = (int)((timeSec - (int)timeSec) * 1000.0f);
+
+    snprintf(buffer, size, "%02d:%02d:%03d", minutes, seconds, milliseconds);
+}
+
 void DrawEndingScreen()
 {
-    if (!endMenuActive) return;
+    if (!endMenuActive)
+        return;
 
     unsigned char a = (unsigned char)(endMenuAlpha * 200);
-    DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0,0,0,a});
+    DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, a});
 
-    int w = 600;
+    int w = GAME_WIDTH;
     int h = 500;
-    int x = GAME_WIDTH/2 - w/2;
-    int y = GAME_HEIGHT/2 - h/2;
+    int x = GAME_WIDTH / 2 - w / 2;
+    int y = GAME_HEIGHT / 2 - h / 2;
 
     char lastBuf[32];
     char bestBuf[32];
-    snprintf(lastBuf, sizeof(lastBuf), "Time: %.2fs", lastRunTime);
-    snprintf(bestBuf, sizeof(bestBuf), "Best: %.2fs", bestTime);
+    FormatTime(lastBuf, sizeof(lastBuf), lastRunTime);
+    FormatTime(bestBuf, sizeof(bestBuf), bestTime);
+
+    char lastLabel[48];
+    char bestLabel[48];
+
+    snprintf(lastLabel, sizeof(lastLabel), "Time: %s", lastBuf);
+    snprintf(bestLabel, sizeof(bestLabel), "Best: %s", bestBuf);
 
     GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
     GuiLabel((Rectangle){x, y + 40, w, 40}, "Finished!");
-    GuiLabel((Rectangle){x, y + 120, w, 40}, lastBuf);
-    GuiLabel((Rectangle){x, y + 180, w, 40}, bestBuf);
+    GuiLabel((Rectangle){x, y + 120, w, 40}, lastLabel);
+    GuiLabel((Rectangle){x, y + 180, w, 40}, bestLabel);
 
     int bw = 400;
     int bh = 100;
-    int bx = GAME_WIDTH/2 - bw/2;
+    int bx = GAME_WIDTH / 2 - bw / 2;
 
     if (GuiButton((Rectangle){bx, y + 260, bw, bh}, "Replay"))
     {
@@ -262,18 +275,20 @@ void DrawEndingScreen()
         endMenuActive = false;
         endMenuAlpha = 0.0f;
 
-        InitPlayer();
-        InitGameCamera();
-        StartCountdown();
+        PrepareGame();
+        StartGame();
     }
 
     if (GuiButton((Rectangle){bx, y + 380, bw, bh}, "Menu"))
     {
         gameState = MENU;
+        gameStarted = false;
         movementTimer = 0;
+        movementActivated = false;
         playerFinished = false;
         endMenuActive = false;
         endMenuAlpha = 0.0f;
+        PrepareGame();
         ShowCursor();
     }
 }
@@ -368,10 +383,8 @@ void DrawMovementTimer()
     if (!movementActivated)
         return;
 
-    int minutes = (int)(movementTimer / 60.0f);
-    int seconds = (int)(movementTimer) % 60;
-    char buffer[16];
-    snprintf(buffer, sizeof(buffer), "%02d:%02d", minutes, seconds);
+    char buffer[32];
+    FormatTime(buffer, sizeof(buffer), movementTimer);
 
     int fontSize = 32;
     DrawText(buffer, 20, 20, fontSize, WHITE);

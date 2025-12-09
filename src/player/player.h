@@ -26,6 +26,7 @@ typedef struct
 extern Player player;
 
 void InitPlayer();
+void ResetPlayer();
 void UpdatePlayer();
 void DrawPlayer();
 
