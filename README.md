@@ -1,2 +1,2 @@
-# CPlatformer
-Simple multiplayer platformer game made in C with raylib library
+# Alien Race: Assimilation
+Space themed racing game made for Game Jam using C and raylib
