@@ -72,10 +72,6 @@ void InitGUI()
     text = (Color){0xF6, 0xD6, 0xBD, 255};
 }
 
-void Drawcutscene()
-{
-}
-
 void RenderMenuGUI()
 {
     int panelWidth = GAME_WIDTH / 3;
@@ -231,6 +227,48 @@ void FormatTime(char *buffer, int size, float timeSec)
     int milliseconds = (int)((timeSec - (int)timeSec) * 1000.0f);
 
     snprintf(buffer, size, "%02d:%02d:%03d", minutes, seconds, milliseconds);
+}
+
+void DrawPauseGUI(){
+
+    int w = GAME_WIDTH;
+    int h = 400;
+    int x = GAME_WIDTH / 2 - w / 2;
+    int y = GAME_HEIGHT / 2 - h / 2;
+
+    DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 100});
+
+    GuiLabel((Rectangle){x, y + 40, w, 40}, "Pause");
+
+    int bw = 400;
+    int bh = 100;
+    int bx = GAME_WIDTH / 2 - bw / 2;
+
+    if (GuiButton((Rectangle){bx, y + 120, bw, bh}, "Replay"))
+    {
+        movementTimer = 0;
+        movementActivated = false;
+        playerFinished = false;
+        endMenuActive = false;
+        endMenuAlpha = 0.0f;
+
+        PrepareGame();
+        StartGame();
+    }
+
+    if (GuiButton((Rectangle){bx, y + 240, bw, bh}, "Menu"))
+    {
+        gameState = MENU;
+        gameStarted = false;
+        movementTimer = 0;
+        movementActivated = false;
+        playerFinished = false;
+        endMenuActive = false;
+        endMenuAlpha = 0.0f;
+        PrepareGame();
+        ShowCursor();
+    }
+    
 }
 
 void DrawEndingScreen()

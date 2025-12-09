@@ -27,15 +27,12 @@ extern float bestTime;
 
 
 void InitGUI();
-void Drawcutscene();
 void RenderMenuGUI();
-void RenderLobbySelectorGUI();
-void RenderLobbyCreatorGUI();
-void RenderWaitingGUI();
 void FormatTime(char *buffer, int size, float timeSec);
 void RenderCreditsGUI();
 void UpdateInGameGUI();
 void DrawInGameGUI();
+void DrawPauseGUI();
 void DrawEndingScreen();
 
 void StartCountdown();

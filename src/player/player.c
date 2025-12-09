@@ -26,7 +26,7 @@ void InitPlayer()
         size};
 
     player.vel = (Vector2){0, 0};
-    player.thrust = (Vector2){0, -500.0f};
+    player.thrust = (Vector2){0, -550.0f};
     player.angle = 0.0f;
     player.rotationSpeed = 300.0f;
 

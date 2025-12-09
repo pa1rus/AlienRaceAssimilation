@@ -6,6 +6,7 @@ int scaledW, scaledH;
 int gameState = CUTSCENE;
 bool gameStarted = false;
 bool menuShowed = false;
+bool pause = false;
 
 const int BLACK_ALPHA = 50;
 
@@ -28,7 +29,8 @@ void InitGame()
     InitAudio();
 }
 
-void PrepareGame(){
+void PrepareGame()
+{
 
     gameStarted = false;
     menuShowed = false;
@@ -41,7 +43,7 @@ void PrepareGame(){
     countdownTimer = 0.0f;
     countdownIndex = -1;
     fadeTimer = 0.0f;
-    ResetPlayer();
+    pause = false;
 
     endMenuActive = false;
     playerFinished = false;
@@ -49,18 +51,18 @@ void PrepareGame(){
 
     finish.animTopID = FINISH_IDLE_TOP;
     finish.animBottomID = FINISH_IDLE_BOTTOM;
+
+    ResetPlayer();
 }
 
 void StartGame()
 {
-    
 
     StartCountdown();
     StartGameAudio();
 
     HideCursor();
 }
-
 
 void UpdateGame()
 {
@@ -95,26 +97,35 @@ void UpdateGame()
 
         if (!gameStarted)
         {
-            endMenuActive = false;
-            endMenuAlpha = 0.0f;
-            movementActivated = false;
-            movementTimer = 0.0f;
-            playerFinished = false;
-            countdownStarted = false;
-            countdownFinished = false;
-
-            StartGameAudio();
-            StartCountdown();
-            HideCursor();
+            StartGame();
             gameStarted = true;
         }
 
-        UpdateBackground(gameCamera.target);
-        UpdatePlayer();
-        UpdateFinish();
-        UpdateGameCamera();
-        UpdateAnimations();
-        UpdateInGameGUI();
+        if (!pause)
+        {
+            UpdateBackground(gameCamera.target);
+            UpdatePlayer();
+            UpdateFinish();
+            UpdateGameCamera();
+            UpdateAnimations();
+            UpdateInGameGUI();
+
+            if (IsKeyPressed(KEY_ESCAPE) && countdownFinished && !playerFinished)
+            {
+
+                ShowCursor();
+                pause = true;
+            }
+        }
+        else
+        {
+
+            if (IsKeyPressed(KEY_ESCAPE))
+            {
+                HideCursor();
+                pause = false;
+            }
+        }
         UpdateAudio();
         break;
     case CREDITS:
@@ -153,6 +164,10 @@ void DrawGame()
         DrawPlayer();
         DrawFinishTop();
         EndMode2D();
+        if (pause)
+        {
+            DrawPauseGUI();
+        }
         DrawInGameGUI();
         DrawEndingScreen();
 

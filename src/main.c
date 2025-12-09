@@ -10,6 +10,7 @@
 int main()
 {
     InitWindow(GAME_WIDTH, GAME_HEIGHT, "Alien Race: Assimilation");
+    SetExitKey(KEY_NULL);
 
     #if defined(PLATFORM_WEB)
     #else
