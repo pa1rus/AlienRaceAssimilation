@@ -12,7 +12,6 @@ const int BLACK_ALPHA = 50;
 
 void InitGame()
 {
-
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
