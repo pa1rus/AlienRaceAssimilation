@@ -23,6 +23,7 @@ typedef enum
 
 extern int gameState;
 extern bool gameStarted;
+extern bool pause;
 
 extern RenderTexture2D target;
 extern int scaledW;

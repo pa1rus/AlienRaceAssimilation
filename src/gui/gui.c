@@ -232,7 +232,7 @@ void FormatTime(char *buffer, int size, float timeSec)
 void DrawPauseGUI(){
 
     int w = GAME_WIDTH;
-    int h = 400;
+    int h = 500;
     int x = GAME_WIDTH / 2 - w / 2;
     int y = GAME_HEIGHT / 2 - h / 2;
 
@@ -244,7 +244,13 @@ void DrawPauseGUI(){
     int bh = 100;
     int bx = GAME_WIDTH / 2 - bw / 2;
 
-    if (GuiButton((Rectangle){bx, y + 120, bw, bh}, "Replay"))
+    if (GuiButton((Rectangle){bx, y + 120, bw, bh}, "Continue"))
+    {
+        HideCursor();
+        pause = false;
+    }
+
+    if (GuiButton((Rectangle){bx, y + 240, bw, bh}, "Replay"))
     {
         movementTimer = 0;
         movementActivated = false;
@@ -256,7 +262,7 @@ void DrawPauseGUI(){
         StartGame();
     }
 
-    if (GuiButton((Rectangle){bx, y + 240, bw, bh}, "Menu"))
+    if (GuiButton((Rectangle){bx, y + 360, bw, bh}, "Menu"))
     {
         gameState = MENU;
         gameStarted = false;
