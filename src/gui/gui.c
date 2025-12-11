@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "audio.h"
 
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -80,6 +81,7 @@ void RenderMenuGUI()
     int y = 250;
     int spacing = 50;
 
+    //Game Title text
     GuiSetStyle(DEFAULT, TEXT_SIZE, 128);
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
     GuiLabel((Rectangle){0, y, GAME_WIDTH, 30}, "Alien Race");
@@ -92,6 +94,7 @@ void RenderMenuGUI()
 
     GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
 
+    //Play button
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
     {
 
@@ -101,6 +104,7 @@ void RenderMenuGUI()
     y += BUTTON_HEIGHT;
     y += spacing;
 
+    //Credits button
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Credits"))
     {
         gameState = CREDITS;
@@ -108,12 +112,14 @@ void RenderMenuGUI()
     y += BUTTON_HEIGHT;
     y += spacing;
 
+    //exit the game
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Exit"))
     {
         UnloadGame();
         CloseWindow();
         exit(0);
     }
+    //best time display
     if (bestTime > 0.0f)
     {
         char buf[64];
@@ -124,6 +130,20 @@ void RenderMenuGUI()
 
         Vector2 size = MeasureTextEx(GetFontDefault(), buf, 32, 0);
         DrawText(buf, GAME_WIDTH / 2 - size.x / 2, 975, 32, text);
+    }
+    //mute audio button
+    //temporary solution before a settings menu
+    if (GuiButton((Rectangle){GAME_WIDTH - spacing * 4,GAME_HEIGHT - spacing *4, BUTTON_HEIGHT, BUTTON_HEIGHT}, "A"))
+    {
+        if(volume != 0.0f){
+            volume = 0.0f;
+        } else {
+            volume = 0.25f;
+        }
+        SetMusicVolume(countdownMusic,volume);
+        SetMusicVolume(gameMusic,volume);
+        SetMusicVolume(menuMusic,volume);
+        SetSoundVolume(engineSound,volume);
     }
 }
 

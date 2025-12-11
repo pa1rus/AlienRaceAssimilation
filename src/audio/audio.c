@@ -4,7 +4,7 @@ Music countdownMusic;
 Music gameMusic;
 Music menuMusic;
 Sound engineSound;
-
+float volume = 0.25f;
 bool menuMusicStarted = false;
 float engineDelayTimer = 0.0f;
 
@@ -13,19 +13,19 @@ void InitAudio()
     InitAudioDevice();
 
     countdownMusic = LoadMusicStream(COUNTDOWN_MUSIC_PATH);
-    SetMusicVolume(countdownMusic, 0.25f);
+    SetMusicVolume(countdownMusic,volume);
     countdownMusic.looping = false;
 
     gameMusic = LoadMusicStream(GAME_MUSIC_PATH);
-    SetMusicVolume(gameMusic, 0.25f);
+    SetMusicVolume(gameMusic,volume);
     gameMusic.looping = true;
 
     menuMusic = LoadMusicStream(MENU_MUSIC_PATH);
-    SetMusicVolume(menuMusic, 0.35f);
+    SetMusicVolume(menuMusic,volume);
     menuMusic.looping = true;
 
     engineSound = LoadSound(ENIGINE_SOUND_PATH);
-    SetSoundVolume(engineSound, 0.35f);
+    SetSoundVolume(engineSound,volume);
 }
 
 void StartMenuAudio()
