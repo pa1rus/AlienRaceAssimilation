@@ -2,26 +2,39 @@
 #include "globals.h"
 #include "game.h"
 #include "audio.h"
-#include "hermes.h"
+
+#if defined(PLATFORM_WEB)
+#include "emscripten/emscripten.h"
+#endif
 
 int main()
 {
-    // SetConfigFlags(FLAG_FULLSCREEN_MODE); 
-    InitWindow(GAME_WIDTH, GAME_HEIGHT, "Platformer");
-    hermesInit();
+    InitWindow(GAME_WIDTH, GAME_HEIGHT, "Alien Race: Assimilation");
+    SetExitKey(KEY_NULL);
 
+    #if defined(PLATFORM_WEB)
+    #else
+
+        SetWindowState(FLAG_FULLSCREEN_MODE);
+        
+    #endif
 
     InitGame();
 
-    SetTargetFPS(60);
+    #if defined(PLATFORM_WEB)
 
+        emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
+
+    #else
+
+    SetTargetFPS(60);
 
     while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
+#endif
 
-    hermesDeinit();
     UnloadGame();
     CloseWindow();
     return 0;

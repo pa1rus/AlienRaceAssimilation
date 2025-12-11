@@ -1,10 +1,4 @@
-#include <stdint.h>
-#include <uuid/uuid.h>
-
 #include "game.h"
-#include "hermes.h"
-#include "gui.h"
-#include "player.h"
 
 RenderTexture2D target;
 int scaledW, scaledH;
@@ -12,15 +6,16 @@ int scaledW, scaledH;
 int gameState = CUTSCENE;
 bool gameStarted = false;
 bool menuShowed = false;
+bool pause = false;
 
-extern uuid_t* lobbyIds;
-extern char* lobbyNames;
-extern uint8_t lobbyCount;
+const int BLACK_ALPHA = 50;
 
 void InitGame()
 {
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+
+    bestTime = LoadValue();
 
     InitGUI();
     InitMaps();
@@ -31,6 +26,41 @@ void InitGame()
     InitCutscene();
     InitFinish();
     InitAudio();
+}
+
+void PrepareGame()
+{
+
+    gameStarted = false;
+    menuShowed = false;
+
+    movementActivated = false;
+    movementTimer = 0.0f;
+
+    countdownStarted = false;
+    countdownFinished = false;
+    countdownTimer = 0.0f;
+    countdownIndex = -1;
+    fadeTimer = 0.0f;
+    pause = false;
+
+    endMenuActive = false;
+    playerFinished = false;
+    endMenuAlpha = 0.0f;
+
+    finish.animTopID = FINISH_IDLE_TOP;
+    finish.animBottomID = FINISH_IDLE_BOTTOM;
+
+    ResetPlayer();
+}
+
+void StartGame()
+{
+
+    StartCountdown();
+    StartGameAudio();
+
+    HideCursor();
 }
 
 void UpdateGame()
@@ -45,94 +75,55 @@ void UpdateGame()
         break;
     case MENU:
         UpdateAudio();
-        StartMenuAudio();
-        hermesPolling(
-                &player.id,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL
-                );
-        break;
-    case LOBBY_SELECTOR:
-        UpdateAudio();
-        hermesPolling(
-                &player.id,
-                &lobbyIds,
-                NULL,
-                lobbyNames,
-                &lobbyCount,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL
-                );
         UpdateBackgroundAuto();
+
         if (!menuShowed)
         {
             ShowCursor();
             menuShowed = true;
+            endMenuActive = false;
+            endMenuAlpha = 0.0f;
+            gameStarted = false;
+            movementActivated = false;
+            movementTimer = 0.0f;
+            playerFinished = false;
+            countdownStarted = false;
+            countdownFinished = false;
         }
-
-        break;
-    case LOBBY_CREATOR:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-        hermesPolling(
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL
-                );
-        break;
-    case WAITING:
-        UpdateAudio();
-        UpdateBackgroundAuto();
-        hermesPolling(
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL
-                );
-
         break;
     case GAME:
 
         if (!gameStarted)
         {
-            StartGameAudio();
-            StartCountdown();
-            HideCursor();
+            StartGame();
             gameStarted = true;
         }
-        UpdateBackground(gameCamera.target);
-        UpdatePlayer();
-        UpdateFinish();
-        UpdateGameCamera();
-        UpdateAnimations();
-        UpdateInGameGUI();
+
+        if (!pause)
+        {
+            UpdateBackground(gameCamera.target);
+            UpdatePlayer();
+            UpdateFinish();
+            UpdateGameCamera();
+            UpdateAnimations();
+            UpdateInGameGUI();
+
+            if (IsKeyPressed(KEY_ESCAPE) && countdownFinished && !playerFinished)
+            {
+
+                ShowCursor();
+                pause = true;
+            }
+        }
+        else
+        {
+
+            if (IsKeyPressed(KEY_ESCAPE))
+            {
+                HideCursor();
+                pause = false;
+            }
+        }
         UpdateAudio();
         break;
     case CREDITS:
@@ -158,39 +149,30 @@ void DrawGame()
         break;
     case MENU:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         RenderMenuGUI();
         break;
-    case LOBBY_SELECTOR:
-        DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
-        RenderLobbySelectorGUI();
-        break;
-    case LOBBY_CREATOR:
-        DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
-        RenderLobbyCreatorGUI();
-        break;
-    case WAITING:
-        DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
-        RenderWaitingGUI();
-        break;
+
     case GAME:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();
         DrawPlayer();
         DrawFinishTop();
         EndMode2D();
+        if (pause)
+        {
+            DrawPauseGUI();
+        }
         DrawInGameGUI();
+        DrawEndingScreen();
 
         break;
     case CREDITS:
         DrawBackground();
-        DrawRectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, (Color){0, 0, 0, 50});
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         RenderCreditsGUI();
         break;
     }
@@ -219,4 +201,5 @@ void UnloadGame()
     UnloadAnimations();
     UnloadCutscene();
     UnloadRenderTexture(target);
+    UnloadGUI();
 }

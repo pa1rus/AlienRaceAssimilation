@@ -2,14 +2,18 @@
 
 Finish finish;
 
-float distance = 700.0f;
+float animationDistance = 700.0f;
+float finishDistance = 50.0f;
+
+bool playerFinished = false;
 
 static Animation LoadFinishAnimation(const char *path, int frameCount, float fps)
 {
     Animation a = {0};
     a.texture = LoadTexture(path);
 
-    if (a.texture.id == 0) return a;
+    if (a.texture.id == 0)
+        return a;
 
     a.frameCount = frameCount;
     a.currentFrame = 0;
@@ -19,8 +23,7 @@ static Animation LoadFinishAnimation(const char *path, int frameCount, float fps
     a.frameRect = (Rectangle){
         0, 0,
         a.texture.width / frameCount,
-        a.texture.height
-    };
+        a.texture.height};
 
     return a;
 }
@@ -31,13 +34,13 @@ void InitFinish()
 
     finish.rect.x = 28 * trueTileSize;
     finish.rect.y = 4 * trueTileSize;
-    finish.rect.width  = 16 * trueTileSize;
-    finish.rect.height = 8  * trueTileSize;
+    finish.rect.width = 16 * trueTileSize;
+    finish.rect.height = 8 * trueTileSize;
 
-    animations[FINISH_IDLE_TOP]       = LoadFinishAnimation(FINISH_IDLE_TOP_PATH, 4, 4);
-    animations[FINISH_IDLE_BOTTOM]    = LoadFinishAnimation(FINISH_IDLE_BOTTOM_PATH, 1,0);
-    animations[FINISH_OPEN_TOP]       = LoadFinishAnimation(FINISH_OPEN_TOP_PATH, 4, 2);
-    animations[FINISH_OPEN_BOTTOM]    = LoadFinishAnimation(FINISH_OPEN_BOTTOM_PATH, 1, 0);
+    animations[FINISH_IDLE_TOP] = LoadFinishAnimation(FINISH_IDLE_TOP_PATH, 4, 4);
+    animations[FINISH_IDLE_BOTTOM] = LoadFinishAnimation(FINISH_IDLE_BOTTOM_PATH, 1, 0);
+    animations[FINISH_OPEN_TOP] = LoadFinishAnimation(FINISH_OPEN_TOP_PATH, 4, 2);
+    animations[FINISH_OPEN_BOTTOM] = LoadFinishAnimation(FINISH_OPEN_BOTTOM_PATH, 1, 0);
     animations[FINISH_TRANSITION_TOP] = LoadFinishAnimation(FINISH_TRANSITION_TOP_PATH, 8, 8);
     animations[FINISH_TRANSITION_BOTTOM] = LoadFinishAnimation(FINISH_TRANSITION_BOTTOM_PATH, 8, 8);
 
@@ -47,15 +50,34 @@ void InitFinish()
 
 void UpdateFinish()
 {
-    Vector2 playerPos = (Vector2){ player.rect.x, player.rect.y };
-    Vector2 finishPos = (Vector2){ finish.rect.x, finish.rect.y };
-    
+    Vector2 playerPos = (Vector2){player.rect.x, player.rect.y};
+    Vector2 finishPos = (Vector2){finish.rect.x, finish.rect.y};
+
     float dist = Vector2Distance(playerPos, finishPos);
 
-    Animation *topAnim    = &animations[finish.animTopID];
+    Animation *topAnim = &animations[finish.animTopID];
     Animation *bottomAnim = &animations[finish.animBottomID];
 
-    if (dist < distance)
+    if (dist < finishDistance && !playerFinished)
+    {
+        movementActivated = false;
+        playerFinished = true;
+
+        lastRunTime = movementTimer;
+
+        if (bestTime == 0.0f || lastRunTime < bestTime)
+        {
+            bestTime = lastRunTime;
+            SaveValue(bestTime);
+        }
+
+        ShowCursor();
+
+        endMenuActive = true;
+        endMenuAlpha = 0.0f;
+    }
+
+    if (dist < animationDistance)
     {
         if (finish.animTopID != FINISH_TRANSITION_TOP &&
             finish.animTopID != FINISH_OPEN_TOP)
@@ -77,26 +99,24 @@ void UpdateFinish()
 
         if (topAnim->currentFrame >= topAnim->frameCount - 1)
         {
-            finish.animTopID    = FINISH_OPEN_TOP;
+            finish.animTopID = FINISH_OPEN_TOP;
             finish.animBottomID = FINISH_OPEN_BOTTOM;
 
             animations[finish.animTopID].currentFrame = 0;
-            animations[finish.animTopID].frameTimer   = 0;
+            animations[finish.animTopID].frameTimer = 0;
 
             animations[finish.animBottomID].currentFrame = 0;
-            animations[finish.animBottomID].frameTimer   = 0;
+            animations[finish.animBottomID].frameTimer = 0;
         }
     }
 }
 
-
 void DrawFinishTop()
 {
-    DrawAnimationAt(finish.animTopID,    finish.rect, 0.0f, 1.0f);
+    DrawAnimationAt(finish.animTopID, finish.rect, 0.0f, 1.0f);
 }
 
 void DrawFinishBottom()
 {
     DrawAnimationAt(finish.animBottomID, finish.rect, 0.0f, 1.0f);
-
 }

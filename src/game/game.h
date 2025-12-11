@@ -17,20 +17,21 @@ typedef enum
 {
     CUTSCENE = 0,
     MENU,
-    LOBBY_SELECTOR,
-    LOBBY_CREATOR,
-    WAITING,
     GAME,
     CREDITS
 } GameState;
 
 extern int gameState;
+extern bool gameStarted;
+extern bool pause;
 
 extern RenderTexture2D target;
 extern int scaledW;
 extern int scaledH;
 
 void InitGame();
+void StartGame();
+void PrepareGame();
 void UpdateGame();
 void DrawGame();
 void UpdateDrawFrame();

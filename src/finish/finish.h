@@ -2,10 +2,12 @@
 #define FINISH_H
 
 #include "raylib.h"
+#include <raymath.h>
 #include "globals.h"
 #include "animations.h"
 #include "maps.h"
 #include "player.h"
+#include "gui.h"
 
 typedef struct {
     Rectangle rect;
@@ -14,6 +16,7 @@ typedef struct {
 } Finish;
 
 extern Finish finish;
+extern bool playerFinished;
 
 void InitFinish();
 void UpdateFinish();
