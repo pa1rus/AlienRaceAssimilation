@@ -15,7 +15,11 @@ int main()
     #if defined(PLATFORM_WEB)
     #else
 
+    #ifndef __APPLE__
+
+
         SetWindowState(FLAG_FULLSCREEN_MODE);
+    #endif // #ifndef __APPLE__
         
     #endif
 
