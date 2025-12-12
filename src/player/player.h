@@ -8,6 +8,10 @@
 #include "gui.h"
 #include "finish.h"
 
+#ifdef DEV_MODE
+    #include "ai.h"
+#endif
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -27,6 +31,7 @@ extern Player player;
 
 void InitPlayer();
 void ResetPlayer();
+void UpdatePlayerPhysics(bool throttle, float turn);
 void UpdatePlayer();
 void DrawPlayer();
 

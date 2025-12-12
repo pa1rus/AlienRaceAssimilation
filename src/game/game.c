@@ -26,6 +26,13 @@ void InitGame()
     InitCutscene();
     InitFinish();
     InitAudio();
+
+    #ifdef DEV_MODE
+    
+    srand(time(NULL));
+    InitPopulation();
+
+    #endif
 }
 
 void PrepareGame()
@@ -56,12 +63,22 @@ void PrepareGame()
 
 void StartGame()
 {
+    #ifdef DEV_MODE
+
+        if (useAiInput) {
+            movementActivated = true;
+            countdownStarted = true;
+            countdownFinished = true;
+            return;
+        }
+
+    #endif    
 
     StartCountdown();
     StartGameAudio();
-
     HideCursor();
 }
+
 
 void UpdateGame()
 {
@@ -97,12 +114,26 @@ void UpdateGame()
         {
             StartGame();
             gameStarted = true;
+
         }
 
         if (!pause)
         {
             UpdateBackground(gameCamera.target);
-            UpdatePlayer();
+
+            #ifdef DEV_MODE
+
+            if (useAiInput)
+            {
+                RunCurrentAiAgent(); 
+            }
+            else
+
+            #endif
+            {
+                UpdatePlayer();
+            }
+
             UpdateFinish();
             UpdateGameCamera();
             UpdateAnimations();
@@ -167,6 +198,9 @@ void DrawGame()
             DrawPauseGUI();
         }
         DrawInGameGUI();
+        #ifdef DEV_MODE
+        DrawAiGUI();
+        #endif
         DrawEndingScreen();
 
         break;

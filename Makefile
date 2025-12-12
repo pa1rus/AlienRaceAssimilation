@@ -4,7 +4,10 @@ INCDIR_LIB = -Ilib -Ilib/cjson
 
 BUILD_DIR  = build
 OUT_NATIVE = $(BUILD_DIR)/linux/game
+OUT_DEV    = $(BUILD_DIR)/linux/game_dev
 OUT_WEB    = $(BUILD_DIR)/web/index.html
+
+CFLAGS_DEV = -DDEV_MODE
 
 CC_NATIVE     = zig cc
 CFLAGS_NATIVE = -Wall -std=c99 $(INCDIR_SRC) $(INCDIR_LIB)
@@ -15,19 +18,19 @@ INCDIR_WEB   = $(INCDIR_SRC) -Ilib -Ilib/cjson
 CFLAGS_WEB   = -O2 -Wall -DPLATFORM_WEB -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 $(INCDIR_WEB)
 LIBS_WEB     = ./lib/libraylib.web.a -s USE_GLFW=3 -s ASSERTIONS=0 -s GL_DEBUG=0 -s NO_EXIT_RUNTIME=1
 
-ifeq ($(OS),Linux)
-	LIBS_NATIVE +=  -luuid
-endif
-
-.PHONY: all clean native web
+.PHONY: all clean native dev web
 
 all: native
 
 native:
 	@mkdir -p $(BUILD_DIR)/linux
-
 	$(CC_NATIVE) $(CFLAGS_NATIVE) $(SRC) -o $(OUT_NATIVE) $(LIBS_NATIVE)
 	./$(OUT_NATIVE)
+
+dev:
+	@mkdir -p $(BUILD_DIR)/linux
+	$(CC_NATIVE) $(CFLAGS_NATIVE) $(CFLAGS_DEV) $(SRC) -o $(OUT_DEV) $(LIBS_NATIVE)
+	./$(OUT_DEV)
 
 web:
 	@mkdir -p $(BUILD_DIR)/web
@@ -40,7 +43,6 @@ web:
 	--preload-file assets/credits@/assets/credits \
 	--shell-file src/minshell.html \
 	-o $(OUT_WEB)
-
 
 clean:
 	rm -rf $(BUILD_DIR)

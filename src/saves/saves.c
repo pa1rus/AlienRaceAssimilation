@@ -2,7 +2,7 @@
 
 bool SaveValue(float value)
 {
-    #if defined(PLATFORM_WEB)
+    #ifdef PLATFORM_WEB
         EM_ASM_({ localStorage.setItem("highscore", $0); }, value);
         return true;
     #else
@@ -14,7 +14,7 @@ bool SaveValue(float value)
 
 float LoadValue()
 {
-    #if defined(PLATFORM_WEB)
+    #ifdef PLATFORM_WEB
         float result = EM_ASM_DOUBLE({
             let v = localStorage.getItem("highscore");
             if (!v) return 0;

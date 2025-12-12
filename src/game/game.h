@@ -13,6 +13,10 @@
 #include "cutscene.h"
 #include "background.h"
 
+#ifdef DEV_MODE
+#include <time.h>
+#endif
+
 typedef enum
 {
     CUTSCENE = 0,

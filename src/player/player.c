@@ -16,12 +16,11 @@ void InitPlayer()
 
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
-
     float size = tileSize * tileScale;
 
     player.rect = (Rectangle){
-        playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2,
-        playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2,
+        playerSpawnPoints[gameMapData.currentMapIndex].x * size + size / 2,
+        playerSpawnPoints[gameMapData.currentMapIndex].y * size + size / 2,
         size,
         size};
 
@@ -29,22 +28,19 @@ void InitPlayer()
     player.thrust = (Vector2){0, -550.0f};
     player.angle = 0.0f;
     player.rotationSpeed = 300.0f;
-
     player.radius = size * 0.25f;
-
     player.activeAnimation = PLAYER_IDLE;
 }
 
 void ResetPlayer()
 {
-
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
 
     float size = tileSize * tileScale;
 
-    player.rect.x = playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2;
-    player.rect.y = playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2;
+    player.rect.x = playerSpawnPoints[gameMapData.currentMapIndex].x * size + size / 2;
+    player.rect.y = playerSpawnPoints[gameMapData.currentMapIndex].y * size + size / 2;
     player.vel = (Vector2){0, 0};
     player.angle = 0.0f;
 }
@@ -55,12 +51,13 @@ Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
 
     double radians = angle * (M_PI / 180.0);
     double rotation_matrix[2][2] = {
-        {cos(radians), sin(radians) * -1},
+        {cos(radians), -sin(radians)},
         {sin(radians), cos(radians)},
     };
 
-    double x = (rotation_matrix[0][0] * coordinates.x) + (rotation_matrix[0][1] * coordinates.y);
-    double y = (rotation_matrix[1][0] * coordinates.x) + (rotation_matrix[1][1] * coordinates.y);
+    double x = rotation_matrix[0][0] * coordinates.x + rotation_matrix[0][1] * coordinates.y;
+    double y = rotation_matrix[1][0] * coordinates.x + rotation_matrix[1][1] * coordinates.y;
+
     return Vector2Add((Vector2){x, y}, anchor);
 }
 
@@ -112,74 +109,91 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
     return false;
 }
 
+void UpdatePlayerPhysics(bool throttle, float turn)
+{
+    if (playerFinished || !movementActivated)
+        return;
+
+    float deltaTime = GetFrameTime();
+    framesSincelastBump++;
+
+    if (turn != 0)
+        player.angle += turn * deltaTime * player.rotationSpeed;
+
+    if (throttle)
+    {
+        Vector2 thrustDir = rotate(player.thrust, player.angle, (Vector2){0, 0});
+        player.vel = Vector2Add(player.vel, Vector2Scale(thrustDir, deltaTime));
+    }
+
+    float speed = Vector2Length(player.vel);
+    if (speed > MAX_SPEED)
+        player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
+
+    Vector2 center = (Vector2){player.rect.x, player.rect.y};
+
+    Vector2 nextX = {center.x + player.vel.x * deltaTime, center.y};
+    if (!CheckCollisionWithTiles(nextX, player.radius))
+    {
+        player.rect.x = nextX.x;
+    }
+    else
+    {
+        int sign = (player.vel.x > 0) ? -1 : 1;
+        for (int i = 0; i < 5; i++)
+        {
+            nextX.x += sign * 0.1f;
+            if (!CheckCollisionWithTiles(nextX, player.radius))
+            {
+                player.rect.x = nextX.x;
+                break;
+            }
+        }
+        player.vel.x *= -0.25f;
+    }
+
+    Vector2 nextY = {player.rect.x, center.y + player.vel.y * deltaTime};
+    if (!CheckCollisionWithTiles(nextY, player.radius))
+    {
+        player.rect.y = nextY.y;
+    }
+    else
+    {
+        int sign = (player.vel.y > 0) ? -1 : 1;
+        for (int i = 0; i < 5; i++)
+        {
+            nextY.y += sign * 0.1f;
+            if (!CheckCollisionWithTiles(nextY, player.radius))
+            {
+                player.rect.y = nextY.y;
+                break;
+            }
+        }
+        player.vel.y *= -0.25f;
+    }
+}
+
 void UpdatePlayer()
 {
-    if (!playerFinished && movementActivated)
+    bool throttle = false;
+    float turn = 0.0f;
+
+    if (IsKeyDown(KEY_W))
     {
-        float deltaTime = GetFrameTime();
-        framesSincelastBump++;
-
-        if (IsKeyDown(KEY_W))
-        {
-            player.vel = Vector2Add(
-                player.vel,
-                Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
-            player.activeAnimation = PLAYER_FLY;
-        }
-        else
-            player.activeAnimation = PLAYER_IDLE;
-
-        if (IsKeyDown(KEY_D))
-            player.angle += deltaTime * player.rotationSpeed;
-        if (IsKeyDown(KEY_A))
-            player.angle -= deltaTime * player.rotationSpeed;
-
-        float speed = Vector2Length(player.vel);
-        if (speed > MAX_SPEED)
-            player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
-
-        Vector2 center = (Vector2){player.rect.x, player.rect.y};
-
-        Vector2 nextX = {center.x + player.vel.x * deltaTime, center.y};
-        if (!CheckCollisionWithTiles(nextX, player.radius))
-        {
-            player.rect.x = nextX.x;
-        }
-        else
-        {
-            int sign = (player.vel.x > 0) ? -1 : 1;
-            for (int i = 0; i < 5; i++)
-            {
-                nextX.x += sign * 0.1f;
-                if (!CheckCollisionWithTiles(nextX, player.radius))
-                {
-                    player.rect.x = nextX.x;
-                    break;
-                }
-            }
-            player.vel.x *= -0.25f;
-        }
-
-        Vector2 nextY = {player.rect.x, center.y + player.vel.y * deltaTime};
-        if (!CheckCollisionWithTiles(nextY, player.radius))
-        {
-            player.rect.y = nextY.y;
-        }
-        else
-        {
-            int sign = (player.vel.y > 0) ? -1 : 1;
-            for (int i = 0; i < 5; i++)
-            {
-                nextY.y += sign * 0.1f;
-                if (!CheckCollisionWithTiles(nextY, player.radius))
-                {
-                    player.rect.y = nextY.y;
-                    break;
-                }
-            }
-            player.vel.y *= -0.25f;
-        }
+        throttle = true;
+        player.activeAnimation = PLAYER_FLY;
     }
+    else
+    {
+        player.activeAnimation = PLAYER_IDLE;
+    }
+
+    if (IsKeyDown(KEY_D))
+        turn = +1.0f;
+    if (IsKeyDown(KEY_A))
+        turn = -1.0f;
+
+    UpdatePlayerPhysics(throttle, turn);
 }
 
 void DrawPlayer()

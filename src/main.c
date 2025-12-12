@@ -3,8 +3,8 @@
 #include "game.h"
 #include "audio.h"
 
-#if defined(PLATFORM_WEB)
-#include "emscripten/emscripten.h"
+#ifdef PLATFORM_WEB
+    #include "emscripten/emscripten.h"
 #endif
 
 int main()
@@ -17,15 +17,15 @@ int main()
 
     #ifndef __APPLE__
 
-
         SetWindowState(FLAG_FULLSCREEN_MODE);
-    #endif // #ifndef __APPLE__
+
+    #endif
         
     #endif
 
     InitGame();
 
-    #if defined(PLATFORM_WEB)
+    #ifdef PLATFORM_WEB
 
         emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
 
@@ -37,7 +37,8 @@ int main()
     {
         UpdateDrawFrame();
     }
-#endif
+    
+    #endif
 
     UnloadGame();
     CloseWindow();
