@@ -2,6 +2,79 @@
 
 GameMapData gameMapData = {0};
 
+void DecompressRow(cJSON *rowJson, Tile *outRow, int cols)
+{
+    int col = 0;
+
+    for (cJSON *seg = rowJson->child; seg && col < cols; seg = seg->next)
+    {
+
+        int count = 1;
+        cJSON *value = seg;
+
+        if (
+            cJSON_IsArray(seg) &&
+            cJSON_GetArraySize(seg) == 2 &&
+            cJSON_IsNumber(cJSON_GetArrayItem(seg, 0))
+        ) {
+            count = cJSON_GetArrayItem(seg, 0)->valueint;
+            value = cJSON_GetArrayItem(seg, 1);
+        }
+
+
+        for (int i = 0; i < count && col < cols; i++, col++)
+        {
+            Tile *tile = &outRow[col];
+            tile->indices = NULL;
+            tile->indiceCount = 0;
+            tile->currentFrame = 0;
+            tile->animationTimer = 0;
+
+            if (cJSON_IsArray(value))
+            {
+                int n = cJSON_GetArraySize(value);
+                tile->indiceCount = n;
+                tile->indices = malloc(sizeof(int) * n);
+
+                int k = 0;
+                for (cJSON *idx = value->child; idx; idx = idx->next, k++)
+                {
+                    tile->indices[k] = idx->valueint;
+                }
+            }
+        }
+    }
+}
+
+void DecompressRows(cJSON *rowsJson, Tile **tiles, int cols, int rows)
+{
+    int row = 0;
+
+    for (cJSON *seg = rowsJson->child; seg && row < rows; seg = seg->next)
+    {
+
+        int count = 1;
+        cJSON *rowValue = seg;
+
+        if (
+            cJSON_IsArray(seg) &&
+            cJSON_GetArraySize(seg) == 2 &&
+            cJSON_IsNumber(cJSON_GetArrayItem(seg, 0)) &&
+            cJSON_IsArray(cJSON_GetArrayItem(seg, 1))
+        ) 
+    {
+    count = cJSON_GetArrayItem(seg, 0)->valueint;
+    rowValue = cJSON_GetArrayItem(seg, 1);
+}
+
+
+        for (int i = 0; i < count && row < rows; i++, row++)
+        {
+            DecompressRow(rowValue, tiles[row], cols);
+        }
+    }
+}
+
 Tile **CreateTileGrid(int cols, int rows)
 {
     Tile **tiles = malloc(rows * sizeof(Tile *));
@@ -56,23 +129,27 @@ void ParseTiles(cJSON *tilesJson, Tile **tiles, int cols, int rows)
     }
 }
 
-
 Layer *ParseLayers(cJSON *layersJson, int cols, int rows, int *layerCount)
 {
     *layerCount = cJSON_GetArraySize(layersJson);
     Layer *layers = malloc(*layerCount * sizeof(Layer));
 
-    int layerIndex = 0;
-    for (cJSON *layerJson = layersJson->child; layerJson; layerJson = layerJson->next, layerIndex++)
+    int i = 0;
+    for (cJSON *layerJson = layersJson->child; layerJson; layerJson = layerJson->next, i++)
     {
-        cJSON *opacity = cJSON_GetObjectItem(layerJson, "opacity");
-        cJSON *collisions = cJSON_GetObjectItem(layerJson, "collisions");
-        cJSON *tiles = cJSON_GetObjectItem(layerJson, "tiles");
+        layers[i].opacity =
+            cJSON_GetObjectItem(layerJson, "opacity") ? (float)cJSON_GetObjectItem(layerJson, "opacity")->valuedouble : 1.0f;
 
-        layers[layerIndex].opacity = opacity ? opacity->valuedouble : 1.0f;
-        layers[layerIndex].collisions = collisions ? collisions->type == cJSON_True : false;
-        layers[layerIndex].tiles = CreateTileGrid(cols, rows);
-        ParseTiles(tiles, layers[layerIndex].tiles, cols, rows);
+        layers[i].collisions =
+            cJSON_IsTrue(cJSON_GetObjectItem(layerJson, "collisions"));
+
+        layers[i].tiles = CreateTileGrid(cols, rows);
+
+        cJSON *tiles = cJSON_GetObjectItem(layerJson, "tiles");
+        if (cJSON_IsArray(tiles))
+        {
+            DecompressRows(tiles, layers[i].tiles, cols, rows);
+        }
     }
     return layers;
 }
@@ -81,16 +158,15 @@ Map ParseMap(cJSON *mapJson)
 {
     Map map = {0};
 
-    cJSON *cols = cJSON_GetObjectItem(mapJson, "gridCols");
-    cJSON *rows = cJSON_GetObjectItem(mapJson, "gridRows");
-    cJSON *layers = cJSON_GetObjectItem(mapJson, "layers");
+    map.gridCols = cJSON_GetObjectItem(mapJson, "gridCols")->valueint;
+    map.gridRows = cJSON_GetObjectItem(mapJson, "gridRows")->valueint;
 
-    map.gridCols = cols ? cols->valueint : 0;
-    map.gridRows = rows ? rows->valueint : 0;
-    map.layers = cJSON_IsArray(layers) ? ParseLayers(layers, map.gridCols, map.gridRows, &map.layerCount) : NULL;
+    cJSON *layers = cJSON_GetObjectItem(mapJson, "layers");
+    map.layers = ParseLayers(layers, map.gridCols, map.gridRows, &map.layerCount);
 
     return map;
 }
+
 
 void InitMaps()
 {
