@@ -17,7 +17,6 @@ int main()
 
     #ifndef __APPLE__
 
-
         SetWindowState(FLAG_FULLSCREEN_MODE);
     #endif // #ifndef __APPLE__
         

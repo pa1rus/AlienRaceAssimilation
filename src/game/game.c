@@ -13,7 +13,7 @@ const int BLACK_ALPHA = 50;
 void InitGame()
 {
     target = LoadRenderTexture(GAME_WIDTH, GAME_HEIGHT);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
 
     bestTime = LoadValue();
 
@@ -180,6 +180,7 @@ void DrawGame()
     EndTextureMode();
 
     BeginDrawing();
+    ClearBackground(c);
     Rectangle src = {0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height};
     Rectangle dst = {0.0f, 0.0f, (float)scaledW, (float)scaledH};
     DrawTexturePro(target.texture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);

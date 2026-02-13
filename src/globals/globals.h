@@ -3,8 +3,10 @@
 
 #define TILESET_PATH "./assets/maps/tiles.png"
 #define MAP_JSON_PATH "./assets/maps/maps.json"
+
 #define PLAYER_ANIMATION_IDLE_PATH "./assets/animations/playerIdle.png"
 #define PLAYER_ANIMATION_FLY_PATH "./assets/animations/playerFly.png"
+
 #define COUNTDOWN_MUSIC_PATH "./assets/audio/countdownMusic.ogg"
 #define GAME_MUSIC_PATH "./assets/audio/gameMusic.ogg"
 #define MENU_MUSIC_PATH "./assets/audio/menuMusic.ogg"
@@ -31,6 +33,9 @@
 #define KL_PATH "./assets/credits/kl.png"
 #define MB_PATH "./assets/credits/mb.png"
 #define JB_PATH "./assets/credits/jb.png"
+
+#define MUTE_AUDIO_BUTTON_PATH "./assets/ui/muteAudioButton/muteAudioButton.png"
+#define MUTE_AUDIO_BUTTON_CHECKED_PATH "./assets/ui/muteAudioButton/muteAudioButtonChecked.png"
 
 #define GAME_WIDTH  1920
 #define GAME_HEIGHT 1080

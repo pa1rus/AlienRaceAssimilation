@@ -34,6 +34,9 @@ Texture2D kl;
 Texture2D mb;
 Texture2D jb;
 
+Texture2D muteAudioButton;
+Texture2D muteAudioButtonChecked;
+
 Color text;
 
 void InitGUI()
@@ -69,6 +72,9 @@ void InitGUI()
     kl = LoadTexture(KL_PATH);
     mb = LoadTexture(MB_PATH);
     jb = LoadTexture(JB_PATH);
+
+    muteAudioButton = LoadTexture(MUTE_AUDIO_BUTTON_PATH);
+    muteAudioButtonChecked = LoadTexture(MUTE_AUDIO_BUTTON_CHECKED_PATH);
 
     text = (Color){0xF6, 0xD6, 0xBD, 255};
 }
@@ -133,7 +139,11 @@ void RenderMenuGUI()
     }
     //mute audio button
     //temporary solution before a settings menu
-    if (GuiButton((Rectangle){GAME_WIDTH - spacing * 4,GAME_HEIGHT - spacing *4, BUTTON_HEIGHT, BUTTON_HEIGHT}, "A"))
+    Rectangle muteAudioButtonRectangle = (Rectangle){GAME_WIDTH - spacing * 4,GAME_HEIGHT - spacing *4, BUTTON_HEIGHT, BUTTON_HEIGHT};
+    bool muted = (volume == 0.0f);
+    Texture2D tex = muted ? muteAudioButtonChecked : muteAudioButton;
+
+    if (GuiButton(muteAudioButtonRectangle, ""))
     {
         if(volume != 0.0f){
             volume = 0.0f;
@@ -145,6 +155,7 @@ void RenderMenuGUI()
         SetMusicVolume(menuMusic,volume);
         SetSoundVolume(engineSound,volume);
     }
+    DrawTexturePro(tex, (Rectangle){0, 0, tex.width, tex.height}, muteAudioButtonRectangle, (Vector2) {0, 0}, 0, (Color){0xF6, 0xD6, 0xBD, 255});
 }
 
 void RenderCreditsGUI()
