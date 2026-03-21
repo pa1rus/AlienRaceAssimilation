@@ -7,6 +7,8 @@ int gameState = CUTSCENE;
 bool gameStarted = false;
 bool menuShowed = false;
 bool pause = false;
+bool multi = false;
+
 
 const int BLACK_ALPHA = 50;
 
@@ -19,7 +21,7 @@ void InitGame()
 
     InitGUI();
     InitMaps();
-    InitPlayer();
+    InitPlayers();
     InitGameCamera();
     InitBackground();
     InitAnimations();
@@ -51,7 +53,7 @@ void PrepareGame()
     finish.animTopID = FINISH_IDLE_TOP;
     finish.animBottomID = FINISH_IDLE_BOTTOM;
 
-    ResetPlayer();
+    ResetPlayers();
 }
 
 void StartGame()
@@ -91,6 +93,10 @@ void UpdateGame()
             countdownFinished = false;
         }
         break;
+    case MODE_MENU:
+        UpdateAudio();
+        UpdateBackgroundAuto();
+        break;
     case GAME:
 
         if (!gameStarted)
@@ -102,7 +108,7 @@ void UpdateGame()
         if (!pause)
         {
             UpdateBackground(gameCamera.target);
-            UpdatePlayer();
+            UpdatePlayers();
             UpdateFinish();
             UpdateGameCamera();
             UpdateAnimations();
@@ -147,10 +153,17 @@ void DrawGame()
     case CUTSCENE:
         DrawCutscene();
         break;
+
     case MENU:
         DrawBackground();
         DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
         RenderMenuGUI();
+        break;
+
+    case MODE_MENU:
+        DrawBackground();
+        DrawRectangleRec((Rectangle){0, 0, GAME_WIDTH, GAME_HEIGHT}, (Color){0, 0, 0, BLACK_ALPHA});
+        RenderModeMenuGUI();
         break;
 
     case GAME:
@@ -159,7 +172,7 @@ void DrawGame()
         BeginMode2D(gameCamera);
         DrawCurrentMap();
         DrawFinishBottom();
-        DrawPlayer();
+        DrawPlayers();
         DrawFinishTop();
         EndMode2D();
         if (pause)

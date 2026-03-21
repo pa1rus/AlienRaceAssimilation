@@ -1,8 +1,11 @@
 #include "player.h"
+#include "game.h"
 
 #define MAX_SPEED 800.0f
 
 Player player = {0};
+
+Player playerTwo = {0};
 
 const Vector2 playerSpawnPoints[] = {
     (Vector2){5.0f, 153.0f},
@@ -10,32 +13,44 @@ const Vector2 playerSpawnPoints[] = {
 
 int framesSincelastBump = 0;
 
-void InitPlayer()
+void ResetPlayer (Player * player);
+
+void keyInit(){
+    player.keys.forwardKey = KEY_W;
+    player.keys.leftKey = KEY_A;
+    player.keys.rightKey = KEY_D;
+    playerTwo.keys.forwardKey = KEY_I;
+    playerTwo.keys.leftKey = KEY_J;
+    playerTwo.keys.rightKey = KEY_L;
+}
+
+void InitPlayer(Player * player)
 {
-    ResetPlayer();
+    ResetPlayer(player);
+    keyInit();
 
     float tileSize = (float)gameMapData.tileSize;
     float tileScale = (float)gameMapData.tileScale;
 
     float size = tileSize * tileScale;
 
-    player.rect = (Rectangle){
+    player->rect = (Rectangle){
         playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2,
         playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2,
         size,
         size};
 
-    player.vel = (Vector2){0, 0};
-    player.thrust = (Vector2){0, -550.0f};
-    player.angle = 0.0f;
-    player.rotationSpeed = 300.0f;
+    player->vel = (Vector2){0, 0};
+    player->thrust = (Vector2){0, -550.0f};
+    player->angle = 0.0f;
+    player->rotationSpeed = 300.0f;
 
-    player.radius = size * 0.25f;
+    player->radius = size * 0.25f;
 
-    player.activeAnimation = PLAYER_IDLE;
+    player->activeAnimation = PLAYER_IDLE;
 }
 
-void ResetPlayer()
+void ResetPlayer(Player * player)
 {
 
     float tileSize = (float)gameMapData.tileSize;
@@ -43,10 +58,10 @@ void ResetPlayer()
 
     float size = tileSize * tileScale;
 
-    player.rect.x = playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2;
-    player.rect.y = playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2;
-    player.vel = (Vector2){0, 0};
-    player.angle = 0.0f;
+    player->rect.x = playerSpawnPoints[gameMapData.currentMapIndex].x * size + size/2;
+    player->rect.y = playerSpawnPoints[gameMapData.currentMapIndex].y * size + size/2;
+    player->vel = (Vector2){0, 0};
+    player->angle = 0.0f;
 }
 
 Vector2 rotate(Vector2 coordinates, double angle, Vector2 anchor)
@@ -112,81 +127,111 @@ bool CheckCollisionWithTiles(Vector2 center, float radius)
     return false;
 }
 
-void UpdatePlayer()
+void UpdatePlayer(Player * player)
 {
     if (!playerFinished && movementActivated)
     {
         float deltaTime = GetFrameTime();
         framesSincelastBump++;
 
-        if (IsKeyDown(KEY_W))
+        if (IsKeyDown(player->keys.forwardKey))
         {
-            player.vel = Vector2Add(
-                player.vel,
-                Vector2Scale(rotate(player.thrust, player.angle, (Vector2){0, 0}), deltaTime));
-            player.activeAnimation = PLAYER_FLY;
+            player->vel = Vector2Add(
+                player->vel,
+                Vector2Scale(rotate(player->thrust, player->angle, (Vector2){0, 0}), deltaTime));
+            player->activeAnimation = PLAYER_FLY;
         }
         else
-            player.activeAnimation = PLAYER_IDLE;
+            player->activeAnimation = PLAYER_IDLE;
 
-        if (IsKeyDown(KEY_D))
-            player.angle += deltaTime * player.rotationSpeed;
-        if (IsKeyDown(KEY_A))
-            player.angle -= deltaTime * player.rotationSpeed;
+        if (IsKeyDown(player->keys.rightKey))
+            player->angle += deltaTime * player->rotationSpeed;
+        if (IsKeyDown(player->keys.leftKey))
+            player->angle -= deltaTime * player->rotationSpeed;
 
-        float speed = Vector2Length(player.vel);
+        float speed = Vector2Length(player->vel);
         if (speed > MAX_SPEED)
-            player.vel = Vector2Scale(player.vel, MAX_SPEED / speed);
+            player->vel = Vector2Scale(player->vel, MAX_SPEED / speed);
 
-        Vector2 center = (Vector2){player.rect.x, player.rect.y};
+        Vector2 center = (Vector2){player->rect.x, player->rect.y};
 
-        Vector2 nextX = {center.x + player.vel.x * deltaTime, center.y};
-        if (!CheckCollisionWithTiles(nextX, player.radius))
+        Vector2 nextX = {center.x + player->vel.x * deltaTime, center.y};
+        if (!CheckCollisionWithTiles(nextX, player->radius))
         {
-            player.rect.x = nextX.x;
+            player->rect.x = nextX.x;
         }
         else
         {
-            int sign = (player.vel.x > 0) ? -1 : 1;
+            int sign = (player->vel.x > 0) ? -1 : 1;
             for (int i = 0; i < 5; i++)
             {
                 nextX.x += sign * 0.1f;
-                if (!CheckCollisionWithTiles(nextX, player.radius))
+                if (!CheckCollisionWithTiles(nextX, player->radius))
                 {
-                    player.rect.x = nextX.x;
+                    player->rect.x = nextX.x;
                     break;
                 }
             }
-            player.vel.x *= -0.25f;
+            player->vel.x *= -0.25f;
         }
 
-        Vector2 nextY = {player.rect.x, center.y + player.vel.y * deltaTime};
-        if (!CheckCollisionWithTiles(nextY, player.radius))
+        Vector2 nextY = {player->rect.x, center.y + player->vel.y * deltaTime};
+        if (!CheckCollisionWithTiles(nextY, player->radius))
         {
-            player.rect.y = nextY.y;
+            player->rect.y = nextY.y;
         }
         else
         {
-            int sign = (player.vel.y > 0) ? -1 : 1;
+            int sign = (player->vel.y > 0) ? -1 : 1;
             for (int i = 0; i < 5; i++)
             {
                 nextY.y += sign * 0.1f;
-                if (!CheckCollisionWithTiles(nextY, player.radius))
+                if (!CheckCollisionWithTiles(nextY, player->radius))
                 {
-                    player.rect.y = nextY.y;
+                    player->rect.y = nextY.y;
                     break;
                 }
             }
-            player.vel.y *= -0.25f;
+            player->vel.y *= -0.25f;
         }
     }
 }
 
-void DrawPlayer()
+void DrawPlayer(Player * player)
 {
     DrawAnimationAt(
-        player.activeAnimation,
-        player.rect,
-        player.angle,
+        player->activeAnimation,
+        player->rect,
+        player->angle,
         1.0f);
+}
+
+//helper functions a.k.a. the official api from now on
+//else there would be big if blocks in the Player functions
+//which i would fucking despise
+
+void InitPlayers(){
+    InitPlayer(&playerTwo);
+    InitPlayer(&player);
+}
+
+void ResetPlayers(){
+    if (multi){
+        ResetPlayer(&playerTwo);
+    }
+    ResetPlayer(&player);
+}
+
+void UpdatePlayers(){
+    if (multi){
+        UpdatePlayer(&playerTwo);
+    }
+    UpdatePlayer(&player);
+}
+
+void DrawPlayers(){
+    if (multi){
+        DrawPlayer(&playerTwo);
+    }
+    DrawPlayer(&player);
 }

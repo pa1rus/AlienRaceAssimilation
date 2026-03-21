@@ -7,10 +7,17 @@
 #include "animations.h"
 #include "gui.h"
 #include "finish.h"
+#include "game.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+typedef struct {
+    int forwardKey;
+    int leftKey;
+    int rightKey;
+} Keys;
 
 typedef struct
 {
@@ -21,13 +28,14 @@ typedef struct
     double angle;
     float radius;
     AnimationID activeAnimation;
+    Keys keys;
 } Player;
 
 extern Player player;
+extern Player playerTwo;
 
-void InitPlayer();
-void ResetPlayer();
-void UpdatePlayer();
-void DrawPlayer();
-
+void InitPlayers();
+void ResetPlayers();
+void UpdatePlayers();
+void DrawPlayers();
 #endif

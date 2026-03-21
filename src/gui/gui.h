@@ -28,6 +28,7 @@ extern float bestTime;
 
 void InitGUI();
 void RenderMenuGUI();
+void RenderModeMenuGUI();
 void FormatTime(char *buffer, int size, float timeSec);
 void RenderCreditsGUI();
 void UpdateInGameGUI();

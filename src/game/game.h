@@ -16,7 +16,10 @@
 typedef enum
 {
     CUTSCENE = 0,
+    //kurwa mac nie, nie bede zmienial tych nazw to jest za duzo pierdolenia sie ja chce do domu beda te stare i te nowe
     MENU,
+    // single albo duo
+    MODE_MENU,
     GAME,
     CREDITS
 } GameState;
@@ -24,6 +27,7 @@ typedef enum
 extern int gameState;
 extern bool gameStarted;
 extern bool pause;
+extern bool multi;
 
 extern RenderTexture2D target;
 extern int scaledW;

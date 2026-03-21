@@ -1,5 +1,6 @@
 #include "gui.h"
 #include "audio.h"
+#include "game.h"
 
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -104,7 +105,7 @@ void RenderMenuGUI()
     if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Play"))
     {
 
-        gameState = GAME;
+        gameState = MODE_MENU;
 
     }
     y += BUTTON_HEIGHT;
@@ -465,6 +466,66 @@ void DrawMovementTimer()
 
     int fontSize = 32;
     DrawText(buffer, 20, 20, fontSize, WHITE);
+}
+
+void RenderModeMenuGUI()
+{
+    int panelWidth = GAME_WIDTH / 3;
+    int panelX = GAME_WIDTH / 2 - panelWidth / 2;
+
+    int y = 250;
+    int spacing = 50;
+
+    //Game Title text
+    GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xF6D6BDFF);
+    GuiLabel((Rectangle){0, y, GAME_WIDTH, 30}, "SELECT MODE");
+    y += spacing * 2;
+
+
+    //Single button
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Single"))
+    {
+
+        multi = false;
+        gameState = GAME;
+
+    }
+    y += BUTTON_HEIGHT;
+    y += spacing;
+
+    //Multi button
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Multi"))
+    {
+        multi = true;
+        gameState = GAME;
+    }
+    y += BUTTON_HEIGHT;
+    y += spacing;
+
+    //Back button
+    if (GuiButton((Rectangle){panelX, y, panelWidth, BUTTON_HEIGHT}, "Back"))
+    {
+        gameState = MENU;
+    }
+    //mute audio button
+    //temporary solution before a settings menu
+    Rectangle muteAudioButtonRectangle = (Rectangle){GAME_WIDTH - spacing * 4,GAME_HEIGHT - spacing *4, BUTTON_HEIGHT, BUTTON_HEIGHT};
+    bool muted = (volume == 0.0f);
+    Texture2D tex = muted ? muteAudioButtonChecked : muteAudioButton;
+
+    if (GuiButton(muteAudioButtonRectangle, ""))
+    {
+        if(volume != 0.0f){
+            volume = 0.0f;
+        } else {
+            volume = 0.25f;
+        }
+        SetMusicVolume(countdownMusic,volume);
+        SetMusicVolume(gameMusic,volume);
+        SetMusicVolume(menuMusic,volume);
+        SetSoundVolume(engineSound,volume);
+    }
+    DrawTexturePro(tex, (Rectangle){0, 0, tex.width, tex.height}, muteAudioButtonRectangle, (Vector2) {0, 0}, 0, (Color){0xF6, 0xD6, 0xBD, 255});
 }
 
 void UnloadGUI()
