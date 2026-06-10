@@ -5,6 +5,7 @@
 #include "globals.h"
 
 typedef enum {
+    
     PLAYER_IDLE = 0,
     PLAYER_FLY  = 1,
     FINISH_IDLE_TOP = 2,
@@ -17,6 +18,7 @@ typedef enum {
 } AnimationID;
 
 typedef struct {
+
     Texture2D texture;
     Rectangle frameRect;
     int frameCount;
@@ -27,9 +29,9 @@ typedef struct {
 
 extern Animation animations[ANIMATIONS_COUNT];
 
-void InitAnimations(void);
-void UpdateAnimations(void);
+void InitAnimations();
+void UpdateAnimations();
 void DrawAnimationAt(AnimationID id, Rectangle dest, float angle, float scale);
-void UnloadAnimations(void);
+void UnloadAnimations();
 
 #endif

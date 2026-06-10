@@ -2,7 +2,7 @@
 
 Camera2D gameCamera = {0};
 
-void InitGameCamera(void)
+void InitGameCamera()
 {
     gameCamera.target = (Vector2){0.0f, 0.0f};
     gameCamera.offset = (Vector2){(float)GAME_WIDTH * 0.5f, (float)GAME_HEIGHT * 0.5f};

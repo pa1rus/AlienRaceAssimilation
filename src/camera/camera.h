@@ -10,7 +10,7 @@
 
 extern Camera2D gameCamera;
 
-void InitGameCamera(void);
+void InitGameCamera();
 void UpdateGameCamera();
 
 #endif

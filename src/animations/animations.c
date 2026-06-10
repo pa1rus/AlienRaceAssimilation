@@ -2,7 +2,7 @@
 
 Animation animations[ANIMATIONS_COUNT];
 
-static Animation LoadAnimation(const char *path, int frames, float fps)
+Animation LoadAnimation(const char *path, int frames, float fps)
 {
     Animation a = {0};
     a.texture = LoadTexture(path);
@@ -26,13 +26,13 @@ static Animation LoadAnimation(const char *path, int frames, float fps)
     return a;
 }
 
-void InitAnimations(void)
+void InitAnimations()
 {
     animations[PLAYER_IDLE] = LoadAnimation(PLAYER_ANIMATION_IDLE_PATH, 12, 6.0f);
     animations[PLAYER_FLY]  = LoadAnimation(PLAYER_ANIMATION_FLY_PATH,  12, 12.0f);
 }
 
-void UpdateAnimations(void)
+void UpdateAnimations()
 {
     float dt = GetFrameTime();
 
@@ -68,7 +68,7 @@ void DrawAnimationAt(AnimationID id, Rectangle dest, float angle, float scale)
 }
 
 
-void UnloadAnimations(void)
+void UnloadAnimations()
 {
     for (int i = 0; i < ANIMATIONS_COUNT; i++)
         if (animations[i].texture.id != 0)

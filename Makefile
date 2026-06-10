@@ -29,6 +29,7 @@ native:
 	$(CC_NATIVE) $(CFLAGS_NATIVE) $(SRC) -o $(OUT_NATIVE) $(LIBS_NATIVE)
 	./$(OUT_NATIVE)
 
+# ~/emsdk/emsdk_env.sh
 web:
 	@mkdir -p $(BUILD_DIR)/web
 	$(CC_WEB) $(CFLAGS_WEB) $(SRC) $(LIBS_WEB) \
@@ -37,6 +38,7 @@ web:
 	--preload-file assets/animations@/assets/animations \
 	--preload-file assets/cutscene@/assets/cutscene \
 	--preload-file assets/maps@/assets/maps \
+	--preload-file assets/ui@/assets/ui \
 	--preload-file assets/credits@/assets/credits \
 	--shell-file src/minshell.html \
 	-o $(OUT_WEB)
