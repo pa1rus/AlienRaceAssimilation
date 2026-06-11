@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="EN-us">
   <head>
     <meta charset="utf-8" />
@@ -62,11 +62,9 @@
         let newW, newH;
 
         if (winW / winH > targetRatio) {
-          // okno jest "szersze" niż 16:9 → dopasuj do wysokości
           newH = winH;
           newW = newH * targetRatio;
         } else {
-          // okno jest "wyższe" → dopasuj do szerokości
           newW = winW;
           newH = newW / targetRatio;
         }

@@ -29,7 +29,7 @@ native:
 	$(CC_NATIVE) $(CFLAGS_NATIVE) $(SRC) -o $(OUT_NATIVE) $(LIBS_NATIVE)
 	./$(OUT_NATIVE)
 
-# ~/emsdk/emsdk_env.sh
+# source ~/emsdk/emsdk_env.sh
 web:
 	@mkdir -p $(BUILD_DIR)/web
 	$(CC_WEB) $(CFLAGS_WEB) $(SRC) $(LIBS_WEB) \
